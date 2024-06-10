@@ -49,7 +49,7 @@ export default function({ params }:Props) {
 
         {/* Selector de cantidad */}
         <QuantitySelector 
-          quanity={2}
+          quantity={2}
         />
 
         {/* Button */}

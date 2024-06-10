@@ -4,11 +4,11 @@ import { IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5";
 import { useState } from 'react';
 
 interface Props{
-    quanity: number;
+    quantity: number;
 }
 
-export const QuantitySelector = ({ quanity }:Props) => {
-    const [count, setCount] = useState(quanity);
+export const QuantitySelector = ({ quantity }:Props) => {
+    const [count, setCount] = useState(quantity);
     const onQuantityChange = (value: number) => {
         if(count + value < 1) return;
         setCount(count + value)
