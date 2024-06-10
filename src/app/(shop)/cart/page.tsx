@@ -51,19 +51,25 @@ export default function() {
             </div>
             {/* Checkout - Resumen de la compra*/}
             <div className="bg-white rounded-xl shadow-xl p-7">
-              <h2 className="text-2xl mb-2">Resumen de orden</h2>
+              <h2 className="text-xl mb-2 font-bold">Resumen del pedido</h2>
               <div className="grid grid-cols-2">
                 <span>No. Productos</span>
                 <span className="text-right">3 Articulos</span>
 
-                <span>Subtotal</span>
-                <span className="text-right">$100</span>
+                <span>Impuestos</span>
+                <span className="text-right">$0</span>
 
-                <span>Impuestos (15%)</span>
-                <span className="text-right">$100</span>
+                {/* <span>Subtotal</span>
+                <span className="text-right">$100</span> */}
 
-                <span className="text-2xl mt-5">Total: (15%)</span>
-                <span className="text-right mt-5 text-2xl">$100</span>
+                <span className="mb-2 text-sm mt-5"></span>
+                <span className="text-right mb-2 mt-5 text-sm text-gray-400">Calculado al pagar</span>
+
+                <span className="text-xl font-bold mb-2">Subtotal</span>
+                <span className="text-right text-xl font-bold mb-2">$100</span>
+
+                <span className="mb-2 text-sm">IVA incluido</span>
+                <span className="text-right mb-2 text-sm"></span>
               </div>
               <div className="mt-5 mb-2 w-full">
                 <Link 
