@@ -12,3 +12,56 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Size {
+  XS
+  S
+  M
+  L
+  XL
+  XXL
+  XXXL
+}
+
+enum Gender {
+  men
+  women
+  kid
+  unisex
+}
+
+model Category {
+  id      String    @id @default(uuid()) //(2)
+  name    String    @unique //No tener dos categorias iguales
+  // ??
+  Product Product[] //Establecer la realacion
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  inStock     Int
+  price       Float    @default(0)
+  sizes       Size[]   @default([])
+  slug        String   @unique
+  tags        String[] @default([])
+  gender      Gender
+
+  //Relaciones
+
+  category   Category @relation(fields: [categoryId], references: [id]) //Se relaciona el categoryId(1) con el id(2) del model Category
+  categoryId String //(1)
+
+  ProductImage ProductImage[]
+
+  @@index([gender]) //Agregar un indice
+}
+
+model ProductImage {
+  id  Int    @id @default(autoincrement())
+  url String
+
+  product   Product @relation(fields: [productId], references: [id]) //La relacion con la tabla del producto
+  productId String
+}
