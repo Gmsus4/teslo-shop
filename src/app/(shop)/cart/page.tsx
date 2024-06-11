@@ -52,7 +52,7 @@ export default function() {
             }
             </div>
             {/* Checkout - Resumen de la compra*/}
-            <div className="bg-white rounded-xl shadow-xl p-7">
+            <div className="bg-white rounded-xl shadow-xl p-7 h-fit">
               <h2 className="text-xl mb-2 font-bold">Resumen del pedido</h2>
               <div className="grid grid-cols-2">
                 <span>No. Productos</span>
