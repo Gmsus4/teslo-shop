@@ -11,7 +11,7 @@ const productsInCart = [
 
 export default function() {
   return (
-    <div className="flex justify-center items-center mb-72 px-10 sm:px-0">
+    <div className="flex justify-center items-center md:h-[88vh] mb-72 md:mb-0 px-10 sm:px-0">
       <div className="flex flex-col w-[1000px]">
         <Title title="Verificar orden"/>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">

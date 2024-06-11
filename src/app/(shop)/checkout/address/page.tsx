@@ -3,7 +3,7 @@ import { Title } from '@/components';
 
 export default function() {
   return (
-    <div className="flex flex-col sm:justify-center sm:items-center mb-72 px-10 sm:px-0">
+    <div className="flex flex-col sm:justify-center sm:items-center md:h-[88vh] mb-72 md:mb-0 px-10 sm:px-0">
       <div className="w-full  xl:w-[1000px] flex flex-col justify-center text-left">
         <Title title="Dirección" subtitle="Dirección de entrega" />
         <div className="grid grid-cols-1 gap-2 sm:gap-5 sm:grid-cols-2">
