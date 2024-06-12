@@ -28,12 +28,12 @@ export const getPaginatedProductWithImages = async({ page = 1, take = 12 }:Pagin
 
         //2. Obtener el total de paginas
         //todo: 
-        const totalCount = await prisma.product.count({});
-        const totalPages = Math.ceil(totalCount / take);
+        const totalCount = await prisma.product.count({}); //Total de los productos en la base de datos
+        const totalPages = Math.ceil(totalCount / take); //Total de los productos en la base de datos entre los take (Total de productos a iterar / mostrar) redondeado al numero mayor
 
         return {
-            currentPage: page,
-            totalPages: totalPages,
+            currentPage: page, //El valor actual de page, es decir /?page=5 => 5
+            totalPages: totalPages, //Total de paginas
             products: products.map(product => ({
                 ...product,
                 images: product.ProductImage.map( image => image.url) //El image es porque asi lo tengo definido en mi interface
