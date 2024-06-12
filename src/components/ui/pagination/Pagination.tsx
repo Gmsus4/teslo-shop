@@ -47,7 +47,14 @@ export const Pagination = ({ totalPages }: Props) => {
         <ul className="flex list-style-none">
           <li className="page-item">
             <Link
-              className="page-link relative block py-1.5 px-3 border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
+              className={
+                clsx(
+                  "page-link relative block py-1.5 px-3 border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none",
+                  {
+                    'text-gray-300 hover:bg-transparent hover:text-gray-500 cursor-default pointer-events-none tabIndex="-1" aria-disabled="true"': currentPage === 1
+                  }
+                )
+              }
               href={ createPageUrl(currentPage - 1) } //El -1 es porque vamos hacia atras, una pagina menos
             >
               <IoChevronBackOutline size={30} />
@@ -77,7 +84,14 @@ export const Pagination = ({ totalPages }: Props) => {
 
           <li className="page-item">
             <Link
-              className="page-link relative block py-1.5 px-3 border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
+              className={
+                clsx(
+                  "page-link relative block py-1.5 px-3 border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none",
+                  {
+                    'text-gray-300 hover:bg-transparent hover:text-gray-500 cursor-default pointer-events-none tabIndex="-1" aria-disabled="true"': currentPage === totalPages
+                  }
+                )
+              }
               href={ createPageUrl(currentPage + 1) } //El +1 es porque vamos hacia adelante, una pagina mas
             >
               <IoChevronForwardOutline size={30}/>
