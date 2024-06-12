@@ -1,5 +1,5 @@
 //[1,2,3,4,5, ..., 50]
-export const generatePagination = (currentPage: number, totalPages: number) => {
+export const generatePaginationNumbers = (currentPage: number, totalPages: number) => {
     //Si el numero total de paginas es 7 o menos, vamos a mostrar todas las paginas sin puntos suspensivos
     if(totalPages <= 7){
         return Array.from({length: totalPages}, (_, i) => i + 1); //[1,2,3,4,5,6,7]
@@ -8,7 +8,11 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     //Si la página actual está entre las primeras 3 páginas
     //mostrar las primeras 3, puntos suspensivos, y las ultimas 2
     if(currentPage <= 3){
-        return [1,2,3,'...', totalPages -1, totalPages] // [1,2,3, '...', 49, 50]
+        return [1,2,3,'...', totalPages] // [1,2,3, '...', 49, 50]
+    }
+
+    if(currentPage <= 4){
+        return [1,2,3, 4, '...', totalPages] // [1,2,3, '...', 49, 50]
     }
 
     //Si la página actual esta entre las últimas 3 páginas
