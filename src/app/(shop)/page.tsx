@@ -1,11 +1,9 @@
 import { getPaginatedProductWithImages } from "@/actions";
 import { ProductGrid, Title } from "@/components";
-import { initialData } from "@/seed/seed";
-
-const products = initialData.products;
 
 export default async function Home() {
-  const productsTemp = await getPaginatedProductWithImages();
+  const { products } = await getPaginatedProductWithImages();
+  
   return (
     <>
       <Title 
