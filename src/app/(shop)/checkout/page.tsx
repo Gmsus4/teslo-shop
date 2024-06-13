@@ -7,13 +7,7 @@ const productsInCart = [
   initialData.products[0],
   initialData.products[1],
   initialData.products[2],
-  initialData.products[3],
-  initialData.products[4],
-  initialData.products[5],
-  initialData.products[6],
-  initialData.products[7],
-  initialData.products[8],
-  initialData.products[9],
+  
 ]
 
 export default function() {
