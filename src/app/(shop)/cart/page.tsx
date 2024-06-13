@@ -17,7 +17,7 @@ const productsInCart = [
   initialData.products[9],
 ]
 
-export default function() {
+export default function CartPage() {
   // redirect('/empty');
   return (
     <div className="flex flex-col md:flex-row md:gap-10 md:mt-10 md:items-start justify-center md:mb-10 px-4"> {/* mb-72 */}
