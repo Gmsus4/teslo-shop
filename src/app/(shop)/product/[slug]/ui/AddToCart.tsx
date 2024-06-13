@@ -11,14 +11,24 @@ export const AddToCart = ({ product }:Props) => {
 
   const [size, setSize] = useState<Size | undefined>();
   const [quantity, setQuantity] = useState<number>(1);
+  const [posted, setPosted] = useState(false);
 
   const addToCart = () => {
+    setPosted(true);
     if(!size) return;
     console.log({size, quantity})
   }
 
   return (
     <>
+        {
+          posted && !size && ( //Si hicimos clic en el btn para agregar al carrito y además no tiene una talla seleccionada
+            <div className="p-4 mb-4 text-md text-red-800 rounded-lg bg-red-50 fade-in transition-all" role="alert">
+              <span className="font-bold mt-2">Debe de seleccionar una talla *</span> 
+            </div>
+          )
+        }
+
         {/* Selector de tallas */}
         <SizeSelector
             selectedSize={size}
