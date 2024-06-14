@@ -1,66 +1,28 @@
-import { QuantitySelector, Title } from "@/components";
-import { initialData } from "@/seed/seed";
-import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
-const productsInCart = [
-  initialData.products[0],
-  initialData.products[1],
-  initialData.products[2],
-  initialData.products[3],
-  initialData.products[4],
-  initialData.products[5],
-  initialData.products[6],
-  initialData.products[7],
-  initialData.products[8],
-  initialData.products[9],
-]
+import { Title } from "@/components";
+import { ProductsInCart } from "./ui/ProductsInCart";
 
 export default function CartPage() {
   // redirect('/empty');
   return (
-    <div className="flex flex-col md:flex-row md:gap-10 md:mt-10 md:items-start justify-center md:mb-10 px-4"> {/* mb-72 */}
-      <div className="flex flex-col justify-start md:pt-6 min-h-[600px]">
+    <div className="flex justify-center gap-4 md:gap-16 flex-col md:flex-row">
+      <div className="flex flex-col xl:min-w-[600px] lg:min-w-[500px]  md:w-[400px] w-auto mx-4 px-4 md:px-0 md:mx-0">
         <Title title="Carrito"/>
         {/* Carrito */}
-        <div className="flex flex-col mt-5">
-          <span className="text-xl">Agregar mas items</span>
-          <Link href="/" className="underline mb-5">
-            Continua comprando
-          </Link >
+        <span className="text-xl">Agregar mas items</span>
+        <Link href="/" className="underline mb-5">
+          Continua comprando
+        </Link >
+        <div className="overflow-auto md:h-[500px] overflow-x-hidden md:mb-20 scroll-smooth">
 
         {/* Items */}
-        {
-          productsInCart.map(product => (
-            <div key={product.slug} className="flex mb-5">
-                <Image 
-                  src={`/products/${product.images[0]}`}
-                  width={100}
-                  height={100}
-                  style={{
-                    width: '100px',
-                    height: '100px'
-                  }}
-                  alt={product.title}
-                  className="mr-5 rounded"
-                />
-              <div>
-                <p>{product.title}</p>
-                <p>${product.price}</p>
-                <QuantitySelector quantity={ 1 }/>
-                <button className="underline mt-3">
-                  Remover
-                </button>
-              </div>
-            </div>
-          ))
-        }
+        <ProductsInCart />
         </div>
       </div>
       {/* Checkout - Resumen de la compra*/}
-      <div className="py-7 md:p-7 flex flex-col md:w-[420px]">
-        <div className="bg-white rounded-xl shadow-2xl p-7">
+      <div className="">
+        <div className="bg-white rounded-xl shadow-2xl p-7 mb-10 mx-4 md:mx-0 w-auto lg:w-[400px]">
           <h2 className="text-xl mb-2 font-bold">Resumen del pedido</h2>
           <div className="grid grid-cols-2">
             <span>No. Productos</span>
