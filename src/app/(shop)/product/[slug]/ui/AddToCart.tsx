@@ -4,16 +4,22 @@ import { QuantitySelector, SizeSelector } from "@/components"
 import type { CartProduct, Product, Size } from "@/interfaces";
 import { useCartStore } from "@/store";
 import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 interface Props{
   product: Product;
 }
 export const AddToCart = ({ product }:Props) => {
   const addProductToCart = useCartStore(state => state.addProductToCart)
-
+  
   const [size, setSize] = useState<Size | undefined>();
   const [quantity, setQuantity] = useState<number>(1);
   const [posted, setPosted] = useState(false);
+
+  let titleNoti;
+  quantity > 1 ? titleNoti = 'producto agregado' : titleNoti = 'productos agregados';
+
+  const notifySuccess = () => toast.success(`${quantity} ${titleNoti} al carrito`);
 
   const addToCart = () => {
     setPosted(true);
@@ -28,10 +34,12 @@ export const AddToCart = ({ product }:Props) => {
       size: size,
       image: product.images[0],
     }
+
     addProductToCart(cartProduct);
     setPosted(false);
     setQuantity(1);
     setSize(undefined);
+    notifySuccess()
   }
 
   return (
@@ -61,6 +69,18 @@ export const AddToCart = ({ product }:Props) => {
         <button onClick={addToCart} className="btn-primary my-5">
           Agregar al carrito
         </button>
+        <Toaster 
+          position="top-right"
+          reverseOrder={true}
+          toastOptions={
+            {
+              className: 'mt-8',
+              success: {
+                duration: 1500
+              }
+            }
+          }
+        />
     </>
   )
 }
