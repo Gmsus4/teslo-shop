@@ -6,11 +6,13 @@ import { useCartStore } from "@/store";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import toast, { Toaster } from "react-hot-toast";
+import { redirect } from "next/navigation";
 
 export const ProductsInCart = () => {
   const [loaded, setLoaded] = useState(false);
   const removeProduct = useCartStore((state) => state.removeProduct);
   const productsInCart = useCartStore((state) => state.cart);
+  const totalItemsInCart = useCartStore(state => state.getTotalItems());
   const updateProductQuantity = useCartStore(
     (state) => state.updateProductQuantity
   );
@@ -21,10 +23,14 @@ export const ProductsInCart = () => {
     notifySuccess();
     removeProduct(product);
   };
-
+  
   useEffect(() => {
     setLoaded(true);
   }, []);
+
+  useEffect(() => {
+    if(totalItemsInCart === 0) redirect('/empty')
+  }, [totalItemsInCart]);
 
   if (!loaded) {
     return (
