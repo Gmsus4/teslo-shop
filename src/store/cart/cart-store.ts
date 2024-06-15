@@ -9,7 +9,7 @@ interface State {
 
   addProductToCart: (product: CartProduct) => void;
   updateProductQuantity: (product: CartProduct, quantity: number ) => void
-  //removeProduct
+  removeProduct: (product: CartProduct) => void
 }
 
 export const useCartStore = create<State>()(
@@ -62,6 +62,19 @@ export const useCartStore = create<State>()(
             return item
           })
           set({cart: updatedCartProducts} );
+      },
+
+      removeProduct: (product: CartProduct) => {
+        // Obtiene el estado actual del carrito
+        const { cart } = get();
+
+         // Filtra el carrito para eliminar el producto con el mismo id y tamaño
+        const updatedCartProducts = cart.filter(
+          (item) => item.id !== product.id || item.size !== product.size
+        );
+
+        // Actualiza el estado del carrito con los productos filtrados
+        set({cart: updatedCartProducts} );
       }
     }),
     

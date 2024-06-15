@@ -17,9 +17,14 @@ export const AddToCart = ({ product }:Props) => {
   const [posted, setPosted] = useState(false);
 
   let titleNoti;
-  quantity > 1 ? titleNoti = 'producto agregado' : titleNoti = 'productos agregados';
+  if(quantity > 1){
+    titleNoti = 'producto agregado'
+  } else{
+    titleNoti = 'productos agregados'
+  }
+  // quantity > 1 ? titleNoti = 'producto agregado' : titleNoti = 'productos agregados';
 
-  const notifySuccess = () => toast.success(`${quantity} ${titleNoti} al carrito`);
+  const notifySuccess = () => toast.success('Producto agregado al carrito');
 
   const addToCart = () => {
     setPosted(true);
