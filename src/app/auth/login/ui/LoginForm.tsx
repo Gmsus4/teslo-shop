@@ -1,8 +1,9 @@
 "use client";
 
 import { authenticate } from "@/actions";
+import clsx from "clsx";
 import Link from "next/link";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 
 export const LoginForm = () => {
   const [state, dispatch] = useFormState(authenticate, undefined);
@@ -25,9 +26,13 @@ export const LoginForm = () => {
         name="password"
       />
 
-      <button type="submit" className="btn-primary">
-        Ingresar
-      </button>
+      {state === 'CredentialsSignin' && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+          <span className="block sm:inline"> Credenciales no son correctas</span>
+        </div>
+      )}
+
+      <LoginButton />
 
       {/* divisor l ine */}
       <div className="flex items-center my-5">
@@ -42,3 +47,20 @@ export const LoginForm = () => {
     </form>
   );
 };
+
+function LoginButton() {
+  const { pending } = useFormStatus();
+ 
+  return (
+    <button 
+      type="submit" 
+      className={clsx({
+        "btn-primary": !pending,
+        "btn-disabled": pending
+      })}
+        disabled={ pending }
+      >
+      Ingresar
+    </button>
+  );
+}
