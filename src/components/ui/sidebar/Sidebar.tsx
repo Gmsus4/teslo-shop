@@ -1,14 +1,22 @@
 'use client'
 
+import { logout } from "@/actions"
 import { useUIStore } from "@/store"
 import clsx from "clsx"
 import Link from "next/link"
+
 import { IoCloseOutline, IoLogInOutline, IoLogOutOutline, IoPeopleOutline, IoPersonOutline, IoSearchOutline, IoShirtOutline, IoTicketOutline } from "react-icons/io5"
 
 export const Sidebar = () => {
 
     const isSideMenuOpen = useUIStore(state => state.isSideMenuOpen); //Ture or False
     const closeMenu = useUIStore(state => state.closeSideMenu);
+
+    const handleLogout = async () => {
+        closeMenu(); // Cierra el nav
+        await logout(); // Realiza el logout
+        //router.push('/'); // Redirige al home
+      };
 
   return (
     <div>
@@ -79,13 +87,13 @@ export const Sidebar = () => {
                     <span className="ml-3 text-xl">Ingresar</span>
                 </Link>
 
-                <Link 
-                    href="/"
-                    className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all "
+                <button 
+                    className="w-full flex items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all"
+                    onClick={ handleLogout }
                 >
                     <IoLogOutOutline size={30}/>
                     <span className="ml-3 text-xl">Salir</span>
-                </Link>
+                </button>
 
                 {/* Line Separator */}
                 <div className="w-full h-px bg-gray-200 my-10" />
