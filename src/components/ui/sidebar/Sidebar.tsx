@@ -80,7 +80,8 @@ export const Sidebar = () => {
                 </Link>
 
                 <Link 
-                    href="/"
+                    onClick={closeMenu} 
+                    href="/auth/login"
                     className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all "
                 >
                     <IoLogInOutline size={30}/>
