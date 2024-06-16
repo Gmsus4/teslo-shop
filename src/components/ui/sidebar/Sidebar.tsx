@@ -32,7 +32,7 @@ export const Sidebar = () => {
   };
 
   return (
-    <div>
+    <div className={`${isSideMenuOpen ? '' : 'hidden'}`}>
       {/* Background black */}
       {isSideMenuOpen && (
         <div className="fixed top-0 left-0 w-screen h-screen z-10 bg-black opacity-30" />
