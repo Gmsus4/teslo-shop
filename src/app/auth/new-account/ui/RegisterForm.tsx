@@ -6,6 +6,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { registerUser } from "@/actions";
+import { useState } from "react";
 
 type FormInputs = {
   name: string;
@@ -25,12 +27,13 @@ const schema = yup.object().shape({
     .required("El correo electrónico es obligatorio"),
   password: yup
     .string()
-    .min(8, "La contraseña es muy corta, debe tener al menos 8 caracteres")
+    .min(6, "La contraseña es muy corta, debe tener al menos 6 caracteres")
     .required("La contraseña es obligatoria"),
 });
 
 export const RegisterForm = () => {
   // const { register, handleSubmit, formState: {errors} } = useForm<FormInputs>();
+  const [errorMessage, setErrorMessage] = useState('');
   const {
     register,
     handleSubmit,
@@ -40,10 +43,17 @@ export const RegisterForm = () => {
   });
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+    setErrorMessage('');
     const { name, email, password } = data;
-    console.log({ name, email, password });
-
+    
     //Server action
+    const resp = await registerUser(name, email, password);
+    if(!resp.ok){
+      setErrorMessage( resp.message );
+      return;
+    }
+
+    console.log( {resp} );
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
@@ -143,6 +153,14 @@ export const RegisterForm = () => {
           </p>
         )}
       </div>
+
+      {
+        errorMessage && (
+          <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
+            <span className="font-medium">{ errorMessage }</span> 
+          </div>
+        )
+      }
 
       <button className="btn-primary">Crear cuenta</button>
 
