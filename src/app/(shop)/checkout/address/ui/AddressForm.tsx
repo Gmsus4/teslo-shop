@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import type { Country } from "@/interfaces";
+import { useAddressStore } from "@/store";
+import { useEffect } from "react";
 
 interface FormInputs {
   firstName: string;
@@ -61,15 +63,26 @@ const addressSchema = yup.object().shape({
 });
 
 export const AddressForm = ({ countries }: Props) => {
-  const { handleSubmit, register, formState: { errors, isValid } } = useForm<FormInputs>({
+  const { handleSubmit, register, formState: { errors, isValid }, reset } = useForm<FormInputs>({
     resolver: yupResolver(addressSchema),
     //defaultValues: {
       //Todo: Leer de la base de datos
     //}
   });
 
+  const setAddress = useAddressStore(state => state.setAddress);
+  const address = useAddressStore(state => state.address);
+
+  useEffect(() => {
+    if(address.firstName){
+      reset(address)
+    }
+  }, [address])
+  
+
   const onSubmit = (data: FormInputs) => {
     console.log({data});
+    setAddress(data)
   }
 
   return (
