@@ -7,7 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import type { Country } from "@/interfaces";
 import { useAddressStore } from "@/store";
 import { useEffect } from "react";
-import { setUserAdress } from "@/actions";
+import { deleteUserAddress, setUserAdress } from "@/actions";
 import { useSession } from "next-auth/react";
 
 interface FormInputs {
@@ -92,11 +92,9 @@ export const AddressForm = ({ countries }: Props) => {
     const { rememberAddress, ...restAddress} = data;
 
     if( data.rememberAddress ){
-      //Todo: Server Action
       setUserAdress(restAddress, session!.user.id)
     } else {
-      //Todo: Server Action
-      //Tarea
+      deleteUserAddress(session!.user.id)
     }
   }
 
