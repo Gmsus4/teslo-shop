@@ -7,6 +7,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import type { Country } from "@/interfaces";
 import { useAddressStore } from "@/store";
 import { useEffect } from "react";
+import { setUserAdress } from "@/actions";
+import { useSession } from "next-auth/react";
 
 interface FormInputs {
   firstName: string;
@@ -70,6 +72,10 @@ export const AddressForm = ({ countries }: Props) => {
     //}
   });
 
+  const { data: session } = useSession({
+    required: true //Si la persona no esta autenticada la va a mandar al login
+  })
+
   const setAddress = useAddressStore(state => state.setAddress);
   const address = useAddressStore(state => state.address);
 
@@ -82,7 +88,16 @@ export const AddressForm = ({ countries }: Props) => {
 
   const onSubmit = (data: FormInputs) => {
     console.log({data});
-    setAddress(data)
+    setAddress(data);
+    const { rememberAddress, ...restAddress} = data;
+
+    if( data.rememberAddress ){
+      //Todo: Server Action
+      setUserAdress(restAddress, session!.user.id)
+    } else {
+      //Todo: Server Action
+      //Tarea
+    }
   }
 
   return (

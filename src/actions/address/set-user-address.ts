@@ -3,7 +3,7 @@
 import type { Address } from "@/interfaces";
 import prisma from "@/lib/prisma";
 
-export const setUSerAdress = async(address: Address, userId: string) => {
+export const setUserAdress = async(address: Address, userId: string) => {
     try {
         const newAddress = await createOrReplaceAddress(address, userId); //Retorna un nuevo objeto si este no existe o actualiza el objeto con nuevos valores
         return {
@@ -34,6 +34,7 @@ const createOrReplaceAddress = async(address: Address, userId: string) => {
             lastName: address.lastName,
             phone: address.phone,
             postalCode: address.postalCode,
+            city: address.city
         }
 
         if( !storeAddress ){ //Si no existe direccion, nos creamos una nueva
