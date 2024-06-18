@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import type { Country } from "@/interfaces";
+import type { Address, Country } from "@/interfaces";
 import { useAddressStore } from "@/store";
 import { useEffect } from "react";
 import { deleteUserAddress, setUserAdress } from "@/actions";
@@ -24,6 +24,7 @@ interface FormInputs {
 
 interface Props {
   countries: Country[];
+  userStoreAddress?: Partial<Address>;
 }
 
 const addressSchema = yup.object().shape({
@@ -64,12 +65,13 @@ const addressSchema = yup.object().shape({
   rememberAddress: yup.boolean(),
 });
 
-export const AddressForm = ({ countries }: Props) => {
+export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
   const { handleSubmit, register, formState: { errors, isValid }, reset } = useForm<FormInputs>({
     resolver: yupResolver(addressSchema),
-    //defaultValues: {
-      //Todo: Leer de la base de datos
-    //}
+    defaultValues: {
+      ...(userStoreAddress as any),
+      rememberAddress: true,
+    }
   });
 
   const { data: session } = useSession({
