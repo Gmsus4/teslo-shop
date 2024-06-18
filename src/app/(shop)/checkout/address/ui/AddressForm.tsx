@@ -9,6 +9,7 @@ import { useAddressStore } from "@/store";
 import { useEffect } from "react";
 import { deleteUserAddress, setUserAdress } from "@/actions";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface FormInputs {
   firstName: string;
@@ -66,6 +67,7 @@ const addressSchema = yup.object().shape({
 });
 
 export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
+  const router = useRouter();
   const { handleSubmit, register, formState: { errors, isValid }, reset } = useForm<FormInputs>({
     resolver: yupResolver(addressSchema),
     defaultValues: {
@@ -88,16 +90,18 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
   }, [address])
   
 
-  const onSubmit = (data: FormInputs) => {
-    console.log({data});
+  const onSubmit = async (data: FormInputs) => {
+    //console.log({data});
     setAddress(data);
     const { rememberAddress, ...restAddress} = data;
 
     if( data.rememberAddress ){
-      setUserAdress(restAddress, session!.user.id)
+      await setUserAdress(restAddress, session!.user.id)
     } else {
-      deleteUserAddress(session!.user.id)
+      await deleteUserAddress(session!.user.id)
     }
+
+    router.push('/checkout')
   }
 
   return (
