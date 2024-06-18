@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import type { Country } from "@/interfaces";
 
 interface FormInputs {
   firstName: string;
@@ -15,6 +16,10 @@ interface FormInputs {
   country: string;
   phone: string;
   rememberAddress?: boolean;
+}
+
+interface Props {
+  countries: Country[];
 }
 
 const addressSchema = yup.object().shape({
@@ -55,7 +60,7 @@ const addressSchema = yup.object().shape({
   rememberAddress: yup.boolean(),
 });
 
-export const AddressForm = () => {
+export const AddressForm = ({ countries }: Props) => {
   const { handleSubmit, register, formState: { errors, isValid } } = useForm<FormInputs>({
     resolver: yupResolver(addressSchema),
     //defaultValues: {
@@ -260,7 +265,11 @@ export const AddressForm = () => {
               isValid,
           })}>
           <option value="">[ Seleccione ]</option>
-          <option value="CRI">Costa Rica</option>
+          {
+            countries.map( country => (
+              <option key={ country.id } value={country.id}>{country.name}</option>
+            ))
+          }
         </select>
         {errors.country?.message && (
           <p className="mt-2 text-xs text-red-600 dark:text-red-500">
