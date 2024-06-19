@@ -92,10 +92,10 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
 
   const onSubmit = async (data: FormInputs) => {
     //console.log({data});
-    setAddress(data);
     const { rememberAddress, ...restAddress} = data;
+    setAddress(restAddress);
 
-    if( data.rememberAddress ){
+    if( rememberAddress ){
       await setUserAdress(restAddress, session!.user.id)
     } else {
       await deleteUserAddress(session!.user.id)
