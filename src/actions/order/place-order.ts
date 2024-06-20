@@ -109,40 +109,49 @@ export const placeOrder = async( productIds: ProductToOrder[], address: Address)
         // 1. Actualizar el stock de los productos
 
 
-
-
+        
         // 2. Crear la orden - Encabezado - Detalles
-        const order = await tx.order.create({ //Crea datos para el modelo order
-            data: { //La data será:
-                userId: userId, //El userId es el id del usuario
-                itemsInOrder: itemsInOrder, //Los items / productos que hay en la orden del carrito
-                subTotal: subTotal, //El subtotal a pagar
-                tax: tax, //El total a pagar de impuestos (Solo los impuestos)
-                total: total, //El total a pagar | Impuestos + Subtotal
-
-                OrderItem: { //Agregar data al modelo OrderItem
-                    createMany: { //Creando la data a muchos
-                        data: productIds.map(p => ({ //La data será una iteracion de quantity, size y productId del productIds
-                            quantity: p.quantity, //Cantidad de productos
-                            size: p.size, //Tamaños de producto
-                            productId: p.productId, //ID del producto
-                            price: products.find(product => product.id === p.productId)?.price ?? 0 //Precio del producto
+        //const { country, ...restAddress } = address; //Tarea
+        const order = await tx.order.create({ 
+            data: { 
+                userId: userId,
+                itemsInOrder: itemsInOrder, 
+                subTotal: subTotal, 
+                tax: tax, 
+                total: total,
+                
+                OrderItem: { 
+                    createMany: { 
+                        data: productIds.map(p => ({
+                            quantity: p.quantity,
+                            size: p.size, 
+                            productId: p.productId, 
+                            price: products.find(product => product.id === p.productId)?.price ?? 0 
                         }))
                     }
-                }
-
+                },
+                
+                //OrderAddress: { create: { ...restAddress, countryId: country } } //Tarea
             }
         })
 
 
         // 3. Crear la dirección de la orden
-        
-        
+        //Address
+        //Resolución de tarea del profe
+        const { country, ...restAddress } = address;
+        const orderAddress = await tx.orderAddress.create({
+            data: {
+                ...restAddress,
+                countryId: country,
+                orderId: order.id
+            }
+        })
 
         return {
             order: order,
+            orderAddress: orderAddress,
             updatedProducts: [],
-            orderAddress: {}
         }
     });
 
