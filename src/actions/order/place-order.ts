@@ -105,6 +105,53 @@ export const placeOrder = async( productIds: ProductToOrder[], address: Address)
     // console.log({ subTotal, tax, total })
 
     //Crear la transacción de base de datos
+    const prismaTx = await prisma.$transaction(async(tx) => {
+        // 1. Actualizar el stock de los productos
+
+
+
+
+        // 2. Crear la orden - Encabezado - Detalles
+
+
+
+        // 3. Crear la dirección de la orden
+        
+        
+
+        return {
+            orden: 123,
+            updatedProducts: [],
+            orderAddress: {}
+        }
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //1. Se obtiene la data de los productos en el carrito como son el id, quantity y el size de productIds mediante los parámetros (un mapeo del cart que viene del store que mostrara el id, quantity y el size respectivos)
     //2. Obtener la información de la sesión del usuario y validar si esta existe
