@@ -105,61 +105,94 @@ export const placeOrder = async( productIds: ProductToOrder[], address: Address)
     // console.log({ subTotal, tax, total })
 
     //Crear la transacción de base de datos
-    const prismaTx = await prisma.$transaction(async(tx) => {
-        // 1. Actualizar el stock de los productos
-
-
-        
-        // 2. Crear la orden - Encabezado - Detalles
-        //const { country, ...restAddress } = address; //Tarea
-        const order = await tx.order.create({ 
-            data: { 
-                userId: userId,
-                itemsInOrder: itemsInOrder, 
-                subTotal: subTotal, 
-                tax: tax, 
-                total: total,
+    // 1. Actualizar el stock de los productos
+    try {
+        const prismaTx = await prisma.$transaction(async(tx) => {
+            const updatedProductsPromises = products.map((product) => {
+                //Acumular los valores
+                const productQuantity = productIds.filter(//Filtra un arreglo donde coincidan los ids
+                    p => p.productId === product.id
+                ).reduce((currentValue, item) => item.quantity + currentValue, 0)//Suma el valor de la cantidad de esos arreglos 
                 
-                OrderItem: { 
-                    createMany: { 
-                        data: productIds.map(p => ({
-                            quantity: p.quantity,
-                            size: p.size, 
-                            productId: p.productId, 
-                            price: products.find(product => product.id === p.productId)?.price ?? 0 
-                        }))
+                if(productQuantity === 0){
+                    throw new Error(`${ product.id } no tiene cantidad definida`)
+                }
+    
+                return tx.product.update({
+                    where: {id: product.id },
+                    data: {
+                        inStock: {
+                            decrement: productQuantity
+                        }
                     }
-                },
-                
-                //OrderAddress: { create: { ...restAddress, countryId: country } } //Tarea
-            }
-        })
+                })
+            });
+            
+            const updatedProducts = await Promise.all( updatedProductsPromises );
 
-
-        // 3. Crear la dirección de la orden
-        //Address
-        //Resolución de tarea del profe
-        const { country, ...restAddress } = address;
-        const orderAddress = await tx.orderAddress.create({
-            data: {
-                ...restAddress,
-                countryId: country,
-                orderId: order.id
+            //Verificar valores negativos en la existencia, = no hay stock
+            updatedProducts.forEach(product => {
+                if(product.inStock < 0){
+                    throw new Error(`${product.title} no tiene inventario suficiente`)
+                }
+            })
+            
+            // 2. Crear la orden - Encabezado - Detalles
+            //const { country, ...restAddress } = address; //Tarea
+            const order = await tx.order.create({ 
+                data: { 
+                    userId: userId,
+                    itemsInOrder: itemsInOrder, 
+                    subTotal: subTotal, 
+                    tax: tax, 
+                    total: total,
+                    
+                    OrderItem: { 
+                        createMany: { 
+                            data: productIds.map(p => ({
+                                quantity: p.quantity,
+                                size: p.size, 
+                                productId: p.productId, 
+                                price: products.find(product => product.id === p.productId)?.price ?? 0 
+                            }))
+                        }
+                    },
+                    
+                    //OrderAddress: { create: { ...restAddress, countryId: country } } //Tarea
+                }
+            })
+    
+    
+            // 3. Crear la dirección de la orden
+            //Address
+            //Resolución de tarea del profe
+            const { country, ...restAddress } = address;
+            const orderAddress = await tx.orderAddress.create({
+                data: {
+                    ...restAddress,
+                    countryId: country,
+                    orderId: order.id
+                }
+            })
+    
+            return {
+                updatedProducts: updatedProducts,
+                order: order,
+                orderAddress: orderAddress,
             }
-        })
+        });
 
         return {
-            order: order,
-            orderAddress: orderAddress,
-            updatedProducts: [],
+            ok: true,
+            order: prismaTx.order,
+            prismaTx: prismaTx
         }
-    });
-
-
-
-
-
-
+    } catch (error: any) {
+        return {
+            ok: false,
+            message: error?.message
+        }
+    }
 
 
 
