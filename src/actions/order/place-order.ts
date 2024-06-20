@@ -112,7 +112,27 @@ export const placeOrder = async( productIds: ProductToOrder[], address: Address)
 
 
         // 2. Crear la orden - Encabezado - Detalles
+        const order = await tx.order.create({ //Crea datos para el modelo order
+            data: { //La data será:
+                userId: userId, //El userId es el id del usuario
+                itemsInOrder: itemsInOrder, //Los items / productos que hay en la orden del carrito
+                subTotal: subTotal, //El subtotal a pagar
+                tax: tax, //El total a pagar de impuestos (Solo los impuestos)
+                total: total, //El total a pagar | Impuestos + Subtotal
 
+                OrderItem: { //Agregar data al modelo OrderItem
+                    createMany: { //Creando la data a muchos
+                        data: productIds.map(p => ({ //La data será una iteracion de quantity, size y productId del productIds
+                            quantity: p.quantity, //Cantidad de productos
+                            size: p.size, //Tamaños de producto
+                            productId: p.productId, //ID del producto
+                            price: products.find(product => product.id === p.productId)?.price ?? 0 //Precio del producto
+                        }))
+                    }
+                }
+
+            }
+        })
 
 
         // 3. Crear la dirección de la orden
@@ -120,7 +140,7 @@ export const placeOrder = async( productIds: ProductToOrder[], address: Address)
         
 
         return {
-            orden: 123,
+            order: order,
             updatedProducts: [],
             orderAddress: {}
         }
