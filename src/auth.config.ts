@@ -27,7 +27,7 @@ export const authConfig: NextAuthConfig = {
 
     callbacks: {
         authorized({ auth, request: { nextUrl } }) {
-            console.log({auth})
+            //console.log({auth})
             const isLoggedIn = !!auth?.user; //Saber si el usuario incio sesion
 
             if (isOnAuthenticatedRoutes(nextUrl.pathname)) { //Funcion que retorna true si la ruta es una ruta protegida solo para usuarios que inicien sesion
@@ -44,7 +44,7 @@ export const authConfig: NextAuthConfig = {
             return token;
         },
         session({ session, token, user}){
-            console.log({session, token, user})
+            //console.log({session, token, user})
             session.user = token.data as any;
             return session;
         }
@@ -60,7 +60,7 @@ export const authConfig: NextAuthConfig = {
                 if ( !parsedCredentials.success ) return null; //Formulario no es válido
       
                 const { email, password } = parsedCredentials.data; //Extraemos la información 
-                console.log({email, password});
+                //console.log({email, password});
 
                 // Buscar el correo
                 const user = await prisma.user.findUnique({where: { email: email.toLowerCase() }}); //Verificamos el correo
