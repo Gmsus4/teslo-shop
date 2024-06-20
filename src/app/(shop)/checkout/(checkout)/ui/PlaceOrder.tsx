@@ -4,37 +4,49 @@ import { placeOrder } from "@/actions";
 import { useAddressStore, useCartStore } from "@/store";
 import { currencyFormat } from "@/utils";
 import clsx from "clsx";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
 
 export const PlaceOrder = () => {
+    const router = useRouter();
     const [loaded, setLoaded] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
     const address = useAddressStore(state => state.address);
     const { itemsInCart, subTotal, tax, total } = useCartStore(state => state.getSummaryInformation());
 
     const cart = useCartStore(state => state.cart);
+    const clearCart = useCartStore(state => state.clearCart);
 
     useEffect(() => {
         setLoaded(true)
+        if(itemsInCart === 0){
+          redirect('/empty')
+        }
     }, [])
 
     const onPlaceOrder = async() => {
-        setIsPlacingOrder(true);
-        
-        const productsToOrder = cart.map(product => ({
-            productId: product.id,
-            quantity: product.quantity,
-            size: product.size
-        }))
-        
-        console.log({ address, productsToOrder })
+      setIsPlacingOrder(true);
+      
+      const productsToOrder = cart.map(product => ({
+          productId: product.id,
+          quantity: product.quantity,
+          size: product.size
+      }))
 
-        //Todo: Server Action
-        const resp = await placeOrder(productsToOrder, address)
-        console.log({resp})
+      //! Server Action
+      const resp = await placeOrder(productsToOrder, address)
+      if ( !resp.ok ){
         setIsPlacingOrder(false);
-    }
+        setErrorMessage(resp.message);
+        return;
+      }
+
+      //* Todo salio bien
+      clearCart();
+      router.replace('/orders/' + resp.order?.id);
+  }
     
     if( !loaded ){
         return <p>Cargando... </p>
@@ -85,7 +97,7 @@ export const PlaceOrder = () => {
           </span>
         </p>
 
-        {/* <p className="text-red-500">Error de creacion</p> */}
+        <p className="text-red-500">{errorMessage}</p>
 
         <button 
           onClick={ onPlaceOrder }

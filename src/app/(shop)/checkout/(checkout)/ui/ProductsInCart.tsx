@@ -15,9 +15,9 @@ export const ProductsInCart = () => {
     setLoaded(true);
   }, []);
 
-  useEffect(() => {
-    if(totalItemsInCart === 0) redirect('/empty')
-  }, [totalItemsInCart]);
+  // useEffect(() => {
+  //   if(totalItemsInCart === 0) redirect('/empty')
+  // }, [totalItemsInCart]);
 
   if (!loaded) {
     return (
