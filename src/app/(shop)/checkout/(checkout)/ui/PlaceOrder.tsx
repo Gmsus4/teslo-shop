@@ -59,25 +59,23 @@ export const PlaceOrder = () => {
       <h2 className="text-xl mb-2 font-bold">Resumen de orden</h2>
 
       <div className="grid grid-cols-2">
-            <span>No. Productos</span>
-            <span className="text-right">{itemsInCart === 1 ? '1 artículo' : `${itemsInCart} artículos`} </span>
+        <span>No. Productos</span>
+        <span className="text-right">{itemsInCart === 1 ? '1 artículo' : `${itemsInCart} artículos`} </span>
 
-            <span>Impuestos</span>
-            <span className="text-right">$0</span>
-            {/* <span className="text-right">{tax}</span> */}
+        <span>Subtotal</span>
+        <span className="text-right">{currencyFormat(subTotal)}</span>
 
-            {/* <span>Subtotal</span>
-            <span className="text-right">{subTotal}</span> */}
+        <span>Impuestos (15%)</span>
+        <span className="text-right">{currencyFormat(tax)}</span>
 
-            <span className="mb-2 text-sm mt-5"></span>
-            <span className="text-right mb-2 mt-5 text-sm text-gray-400">Calculado al pagar</span>
+        <span className="mb-2 text-sm mt-5"></span>
+        <span className="text-right mb-2 mt-5 text-sm text-gray-400">Calculado al pagar</span>
 
-            <span className="text-xl font-bold mb-2">Subtotal</span>
-            <span className="text-right text-xl font-bold mb-2">{currencyFormat(subTotal) }</span>
-            {/* <span className="text-right text-xl font-bold mb-2">{total}</span> */}
+        <span className="text-xl font-bold mb-2">Total</span>
+        <span className="text-right text-xl font-bold mb-2">{currencyFormat(total) }</span>
 
-            <span className="mb-2 text-sm">IVA incluido</span>
-            <span className="text-right mb-2 text-sm"></span>
+        <span className="mb-2 text-sm">IVA incluido</span>
+        <span className="text-right mb-2 text-sm"></span>
       </div>
       <div className="mt-5 mb-2 w-full">
         <p className="mb-5">

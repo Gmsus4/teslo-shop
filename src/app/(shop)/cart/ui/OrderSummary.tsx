@@ -44,19 +44,17 @@ export const OrderSummary = () => {
         <span>No. Productos</span>
         <span className="text-right">{itemsInCart === 1 ? '1 artículo' : `${itemsInCart} artículos`} </span>
 
-        <span>Impuestos</span>
-        <span className="text-right">$0</span>
-        {/* <span className="text-right">{tax}</span> */}
+        <span>Subtotal</span>
+        <span className="text-right">{currencyFormat(subTotal)}</span>
 
-        {/* <span>Subtotal</span>
-        <span className="text-right">{subTotal}</span> */}
+        <span>Impuestos (15%)</span>
+        <span className="text-right">{currencyFormat(tax)}</span>
 
         <span className="mb-2 text-sm mt-5"></span>
         <span className="text-right mb-2 mt-5 text-sm text-gray-400">Calculado al pagar</span>
 
-        <span className="text-xl font-bold mb-2">Subtotal</span>
-        <span className="text-right text-xl font-bold mb-2">{currencyFormat(subTotal) }</span>
-        {/* <span className="text-right text-xl font-bold mb-2">{total}</span> */}
+        <span className="text-xl font-bold mb-2">Total</span>
+        <span className="text-right text-xl font-bold mb-2">{currencyFormat(total) }</span>
 
         <span className="mb-2 text-sm">IVA incluido</span>
         <span className="text-right mb-2 text-sm"></span>
