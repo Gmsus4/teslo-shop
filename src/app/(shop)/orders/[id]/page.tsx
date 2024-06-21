@@ -1,22 +1,10 @@
+import { getOrderById } from "@/actions";
 import { Title } from "@/components";
-import { initialData } from "@/seed/seed";
+import { currencyFormat } from "@/utils";
 import clsx from "clsx";
 import Image from "next/image";
-import Link from "next/link";
+import { redirect } from "next/navigation";
 import { IoCartOutline } from "react-icons/io5";
-
-const productsInCart = [
-  initialData.products[0],
-  initialData.products[1],
-  initialData.products[2],
-  initialData.products[3],
-  initialData.products[4],
-  initialData.products[5],
-  initialData.products[6],
-  initialData.products[7],
-  initialData.products[8],
-  initialData.products[9],
-]
 
 interface Props {
   params: {
@@ -24,54 +12,56 @@ interface Props {
   }
 } 
 
-export default function OrdersByIdPage({ params }:Props) {
+export default async function OrdersByIdPage({ params }:Props) {
   const { id } = params;
+  // Todo: Llamar el server action
 
-  //Todo: verificar
-  //redirect()
+  const { ok, order } = await getOrderById(id);
+  if( !ok ){
+    redirect('/');
+  }
+
+  const address = order?.OrderAddress;
   
   return (
     <div className="flex flex-col md:flex-row md:gap-10 md:mt-10 md:items-start justify-center md:mb-10 px-4">
       <div className="flex flex-col justify-evenly md:pt-6">
-        <Title title={`Orden #${ id }`}/>
+        <Title title={`Orden #${ id.split('-').at(-1) }`}/>
         {/* Carrito */}
         <div className="flex flex-col mt-5">
           <div className={
             clsx(
               "flex items-center rounded-lg py-2 px-3.5 text-xs font-bold text-white mb-5 ",
               {
-                'bg-red-500': false,
-                'bg-green-700': true
+                'bg-red-500': !order!.isPaid,
+                'bg-green-700': order!.isPaid
               }
             )
           }>
             <IoCartOutline size={30}/>
             {/* <span className="mx-2">Pendiente de pago</span> */}
-            <span className="mx-2">Pagada</span>
+            <span className="mx-2">{order?.isPaid ? 'Pagada' : 'No pagada'}</span>
           </div>
 
         {/* Items */}
         {
-          productsInCart.map(product => (
-            <div key={product.slug} className="flex mb-5">
+          order!.OrderItem.map(item => (
+            <div key={item.product.slug + '-' + item.size} className="flex mb-5">
                 <Image 
-                  src={`/products/${product.images[0]}`}
+                  src={`/products/${item.product.ProductImage[0].url}`}
                   width={100}
                   height={100}
                   style={{
                     width: '100px',
                     height: '100px'
                   }}
-                  alt={product.title}
+                  alt={item.product.title}
                   className="mr-5 rounded"
                 />
               <div>
-                <p>{product.title}</p>
-                <p>${product.price} x 3</p>
-                <p className="font-bold">Subtotal: ${product.price * 3}</p>
-                <button className="underline mt-3">
-                  Remover
-                </button>
+                <p>{item.product.title}</p>
+                <p>${item.price} x {item.quantity}</p>
+                <p className="font-bold">Subtotal: {currencyFormat(item.price * item.quantity)}</p>
               </div>
             </div>
           ))
@@ -84,13 +74,12 @@ export default function OrdersByIdPage({ params }:Props) {
           <h2 className="text-xl mb-2 font-bold">Dirección de entrega</h2>
 
           <div className="mb-10 ">
-            <p className="text-xl">Fernando Gómez</p>
-            <p>Jalisco, MX</p>
-            <p>San Juanito de Escobedo</p>
-            <p>Mercado #47</p>
+            <p className="text-xl">{address!.firstName}  {address!.lastName}</p>
+            <p>{address!.city}, {address!.countryId}</p>
+            <p>{address!.address}</p>
             <p>Col. Centro</p>
-            <p>CP. 46560</p>
-            <p>Tel. +52 3861112341</p>
+            <p>CP. {address!.postalCode}</p>
+            <p>Tel. {address!.phone}</p>
           </div>
 
           {/* Divider */}
@@ -100,19 +89,19 @@ export default function OrdersByIdPage({ params }:Props) {
 
           <div className="grid grid-cols-2">
             <span>No. Productos</span>
-            <span className="text-right">3 Articulos</span>
+            <span className="text-right">{order?.itemsInOrder === 1 ? '1 artículo' : `${order?.itemsInOrder} artículos`} </span>
 
             <span>Subtotal</span>
-            <span className="text-right">$100</span>
+            <span className="text-right">{currencyFormat(order!.subTotal)}</span>
 
-            <span>Impuestos</span>
-            <span className="text-right">$0</span>
+            <span>Impuestos (15%)</span>
+            <span className="text-right">{currencyFormat(order!.tax)}</span>
 
             <span className="mb-2 text-sm mt-5"></span>
             <span className="text-right mb-2 mt-5 text-sm text-gray-400">Calculado al pagar</span>
 
-            <span className="text-xl font-bold">Total</span>
-            <span className="text-right text-xl font-bold">$100</span>
+            <span className="text-xl font-bold mb-2">Total</span>
+            <span className="text-right text-xl font-bold mb-2">{currencyFormat(order!.total) }</span>
 
             <span className="mb-2 text-sm">IVA incluido</span>
             <span className="text-right mb-2 text-sm"></span>
@@ -122,14 +111,14 @@ export default function OrdersByIdPage({ params }:Props) {
               clsx(
                 "flex items-center rounded-lg py-2 px-3.5 text-xs font-bold text-white mb-5 ",
                 {
-                  'bg-red-500': false,
-                  'bg-green-700': true
+                  'bg-red-500': !order!.isPaid,
+                  'bg-green-700': order!.isPaid
                 }
               )
             }>
               <IoCartOutline size={30}/>
               {/* <span className="mx-2">Pendiente de pago</span> */}
-              <span className="mx-2">Pagada</span>
+              <span className="mx-2">{order?.isPaid ? 'Pagada' : 'No pagada'}</span>
             </div>
           </div>
         </div>
