@@ -59,7 +59,7 @@ export const ProductsInCart = () => {
         <div key={`${product.slug}-${product.size}`} className="flex flex-col w-full">
           <div className="w-full h-0.5 rounded bg-gray-200"/>
           <div className="flex mb-1 justify-between items-center sm:gap-10 w-full">
-            <div className="flex items-center my-4 w-full">
+            <div className="flex items-center my-1 w-full">
               <Image
                 src={`/products/${product.image}`}
                 width={100}
@@ -73,7 +73,7 @@ export const ProductsInCart = () => {
               />
               <div className="rest w-full">
                 <div className="title-size-price-delete w-full">
-                  <div className="flex gap-2 items-center justify-between title-btnDelete w-full">
+                  <div className="flex items-center justify-between title-btnDelete w-full">
                     <Link
                       className="hover:cursor-pointer font-bold"
                       href={`/product/${product.slug}`}

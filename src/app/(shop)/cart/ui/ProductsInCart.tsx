@@ -72,7 +72,7 @@ export const ProductsInCart = () => {
           <div key={`${product.slug}-${product.size}`} className="flex flex-col w-full">
             <div className="w-full h-0.5 rounded bg-gray-200"/>
             <div className="flex mb-1 justify-between items-center w-full">
-              <div className="flex items-center my-4 w-full">
+              <div className="flex items-center my-1 w-full">
                 <Image
                   src={`/products/${product.image}`}
                   width={100}

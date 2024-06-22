@@ -25,11 +25,12 @@ export default async function OrdersByIdPage({ params }:Props) {
   
   return (
     <div className="flex justify-center gap-4 md:gap-16 flex-col md:flex-row">
-      <div className="flex flex-col xl:min-w-[600px] lg:min-w-[500px]  md:w-[400px] w-auto mx-4 px-4 md:px-0 md:mx-0">
-        <Title title={`Orden #${ id.split('-').at(-1) }`}/>
+      <div className="flex flex-col xl:min-w-[600px] lg:min-w-[500px] md:w-[400px] w-auto mx-4 px-4 md:px-0 md:mx-0 h-[100%]">
+        <Title className="text-sm mt-0 mb-0 " title={`Orden #${ id.split('-').at(-1) }`}/>
         {/* Carrito */}
-        <div className="overflow-auto md:h-[500px] overflow-x-hidden md:mb-20 scroll-smooth">
-          <div className={
+        <div className="overflow-x-hidden overflow-auto md:h-[600px] scroll-smooth">
+          {/* overflow-x-hidden overflow-auto */}
+          {/* <div className={
             clsx(
               "flex items-center rounded-lg py-2 px-3.5 text-xs font-bold text-white mb-5",
               {
@@ -39,16 +40,16 @@ export default async function OrdersByIdPage({ params }:Props) {
             )
           }>
             <IoCartOutline size={30}/>
-            {/* <span className="mx-2">Pendiente de pago</span> */}
+            <span className="mx-2">Pendiente de pago</span>
             <span className="mx-2">{order?.isPaid ? 'Pagada' : 'No pagada'}</span>
-          </div>
+          </div> */}
 
         {/* Items */}
         {order!.OrderItem.map((item) => (      
-        <div key={item.product.slug + '-' + item.size} className="flex flex-col w-full mb-5">
+        <div key={item.product.slug + '-' + item.size} className="flex flex-col w-full">
           <div className="w-full h-0.5 rounded bg-gray-200"/>
           <div className="flex mb-1 justify-between items-center sm:gap-10 w-full">
-            <div className="flex items-center my-4 w-full">
+            <div className="flex items-center my-1 w-full">
               <Image
                 src={`/products/${item.product.ProductImage[0].url}`}
                 width={100}
@@ -69,7 +70,7 @@ export default async function OrdersByIdPage({ params }:Props) {
                   <p className="text-gray-500 text-sm">${item.price} x {item.quantity} — {item.size}</p>
                   {/* <p className="text-gray-500 text-sm">${item.price} x {item.quantity}</p> */}
                   {/* <p className="text-gray-500 text-sm">{item.quantity} {item.quantity > 1 ? 'productos' : 'producto'}</p> */}
-                  <p className="font-bold text-xl text-gray-500"><span className="font-normal">Subtotal:</span> {currencyFormat(item.price * item.quantity)}</p>  
+                  <p className="font-bold text-lg text-gray-500"><span className="font-normal">Subtotal:</span> {currencyFormat(item.price * item.quantity)}</p>  
                   <div className="w-10 sm:hidden flex">
                   </div>
                 </div>
@@ -79,6 +80,7 @@ export default async function OrdersByIdPage({ params }:Props) {
     ))}
         </div>
       </div>
+
       {/* Checkout - Resumen de la compra*/}
       <div className="bg-white rounded-xl shadow-2xl p-7 mb-10 mx-4 md:mx-0">
       <h2 className="text-xl mb-2 font-bold">Dirección de entrega</h2>
@@ -177,7 +179,7 @@ export default async function OrdersByIdPage({ params }:Props) {
       <div className="mt-5 w-full lg:w-[300px]">
           <div className={
             clsx(
-              "flex items-center rounded-lg py-2 px-3.5 text-xs font-bold text-white mb-5 ",
+              "flex items-center rounded-lg py-2 px-3.5 text-xs font-bold text-white",
               {
                 'bg-red-500': !order!.isPaid,
                 'bg-green-700': order!.isPaid
