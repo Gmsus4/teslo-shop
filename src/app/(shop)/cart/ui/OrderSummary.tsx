@@ -40,24 +40,67 @@ export const OrderSummary = () => {
   )
   
   return (
-    <div className="grid grid-cols-2">
-        <span>No. Productos</span>
-        <span className="text-right">{itemsInCart === 1 ? '1 artículo' : `${itemsInCart} artículos`} </span>
+    <div className="flex flex-col">
+      <div className="flex flex-col gap-4 mt-4">
+        <div className="flex justify-between">
+          <span className="text-gray-500">No. Productos</span>
+          <span className="text-right text-gray-500">{itemsInCart === 1 ? '1 artículo' : `${itemsInCart} artículos`}</span>
+        </div>
 
-        <span>Subtotal</span>
-        <span className="text-right">{currencyFormat(subTotal)}</span>
+        <div className="w-full h-0.5 rounded bg-gray-200"/>
+      </div>
 
-        <span>Impuestos (15%)</span>
-        <span className="text-right">{currencyFormat(tax)}</span>
+      <div className="flex flex-col gap-4 mt-4">
+        <div className="flex justify-between">
+          <span className="text-gray-500">Subtotal</span>
+          <span className="text-right text-gray-500">{currencyFormat(subTotal)}</span>
+        </div>
 
-        <span className="mb-2 text-sm mt-5"></span>
-        <span className="text-right mb-2 mt-5 text-sm text-gray-400">Calculado al pagar</span>
+        <div className="w-full h-0.5 rounded bg-gray-200"/>
+      </div>
 
-        <span className="text-xl font-bold mb-2">Total</span>
-        <span className="text-right text-xl font-bold mb-2">{currencyFormat(total) }</span>
+      <div className="flex flex-col gap-4 mt-4 mb-4">
+        <div className="flex justify-between">
+          <span className="text-gray-500">Impuestos (15%)</span>
+          <span className="text-right text-gray-500">{currencyFormat(tax)}</span>
+        </div>
 
-        <span className="mb-2 text-sm">IVA incluido</span>
-        <span className="text-right mb-2 text-sm"></span>
+        <div className="w-full h-0.5 rounded bg-gray-200"/>
+      </div>
+
+      <div className="flex flex-col">
+        <div className="flex justify-between">
+          <span className="mb-2 text-sm mt-5"></span>
+          <span className="text-right mb-2 mt-5 text-sm text-gray-400">Calculado al pagar</span>
+        </div>
+      </div>
+
+      <div className="flex flex-col">
+        <div className="flex flex-col">
+          <div className="flex justify-between">
+            <span className="text-xl font-bold mb-2">Total</span>
+            <span className="text-right text-xl font-bold mb-2">{currencyFormat(total) }</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="mb-2 text-sm">IVA incluido</span>
+            <span className="text-right mb-2 text-sm"></span>
+          </div>
+        </div>
+      </div>
+        {/* <span>No. Productos</span>
+        <span className="text-right">{itemsInCart === 1 ? '1 artículo' : `${itemsInCart} artículos`} </span> */}
+
+        {/* <span>Impuestos (15%)</span>
+        <span className="text-right">{currencyFormat(tax)}</span> */}
+
+        {/* <span className="mb-2 text-sm mt-5"></span>
+        <span className="text-right mb-2 mt-5 text-sm text-gray-400">Calculado al pagar</span> */}
+
+        {/* <span className="text-xl font-bold mb-2">Total</span>
+        <span className="text-right text-xl font-bold mb-2">{currencyFormat(total) }</span> */}
+
+        {/* <span className="mb-2 text-sm">IVA incluido</span>
+        <span className="text-right mb-2 text-sm"></span> */}
     </div>
   )
 }

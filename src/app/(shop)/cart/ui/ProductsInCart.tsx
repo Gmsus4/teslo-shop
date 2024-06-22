@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import toast, { Toaster } from "react-hot-toast";
 import { redirect } from "next/navigation";
+import { IoTrashOutline } from "react-icons/io5";
 
 export const ProductsInCart = () => {
   const [loaded, setLoaded] = useState(false);
@@ -66,38 +67,76 @@ export const ProductsInCart = () => {
   return (
     <>
       {productsInCart.map((product) => (
-        <div key={`${product.slug}-${product.size}`} className="flex mb-5">
-          <Image
-            src={`/products/${product.image}`}
-            width={100}
-            height={100}
-            style={{
-              width: "100px",
-              height: "100px",
-            }}
-            alt={product.title}
-            className="mr-5 rounded"
-          />
-          <div>
-            <Link
-              className="hover:cursor-pointer"
-              href={`/product/${product.slug}`}
-            >
-              {product.size} - {product.title}
-            </Link>
-            <p>${product.price}</p>
-            <QuantitySelector
-              quantity={product.quantity}
-              onQuantityChanged={(quantity) =>
-                updateProductQuantity(product, quantity)
-              }
-            />
-            <button
-              onClick={() => actionDelete(product)}
-              className="underline mt-3"
-            >
-              Remover
-            </button>
+        <>
+          
+          <div key={`${product.slug}-${product.size}`} className="flex flex-col w-full">
+            <div className="w-full h-0.5 rounded bg-gray-200"/>
+            <div className="flex mb-1 justify-between items-center w-full">
+              <div className="flex items-center my-4 w-full">
+                <Image
+                  src={`/products/${product.image}`}
+                  width={100}
+                  height={100}
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                  }}
+                  alt={product.title}
+                  className="mr-5 rounded"
+                />
+                <div className="rest w-full">
+                  <div className="title-size-price-delete w-full">
+                    <div className="flex gap-2 items-center justify-between title-btnDelete w-full">
+                      <Link
+                        className="hover:cursor-pointer font-bold"
+                        href={`/product/${product.slug}`}
+                      >
+                        {product.title}
+                      </Link>
+                      <IoTrashOutline
+                        size={20}
+                        onClick={() => actionDelete(product)}
+                        className="underline cursor-pointer text-gray-500 flex sm:hidden w-10"
+                      />
+                    </div>
+                    <p className="text-gray-500 text-sm">Talla - {product.size}</p>
+                    <div className="w-10 sm:hidden flex">
+                      <p className="font-bold text-xl"> ${product.price}</p>  
+                    </div>
+                  </div>
+                  <div className="sm:hidden gap-8 flex-col-reverse items-start sm:flex-row sm:items-center mt-4 flex">
+                    <QuantitySelector
+                      quantity={product.quantity}
+                      onQuantityChanged={(quantity) =>
+                        updateProductQuantity(product, quantity)
+                      }
+                    />
+                    <div className="w-10 sm:flex hidden">
+                      <p className="font-bold text-xl"> ${product.price}</p>  
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div className="sm:flex gap-8 flex-col-reverse items-end sm:flex-row sm:items-center mr-6 ml-10 hidden">
+                <QuantitySelector
+                  quantity={product.quantity}
+                  onQuantityChanged={(quantity) =>
+                    updateProductQuantity(product, quantity)
+                  }
+                />
+                <div className="w-10 sm:flex hidden">
+                  <p className="font-bold text-xl"> ${product.price}</p>  
+                </div>
+                <IoTrashOutline
+                  size={20}
+                  onClick={() => actionDelete(product)}
+                  className="underline cursor-pointer text-gray-500"
+                />
+
+              </div>
+            </div>
             <Toaster
               position="top-right"
               reverseOrder={true}
@@ -109,7 +148,7 @@ export const ProductsInCart = () => {
               }}
             />
           </div>
-        </div>
+        </>
       ))}
     </>
   );

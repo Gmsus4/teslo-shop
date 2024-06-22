@@ -2,25 +2,53 @@ import { Title } from "@/components";
 import Link from "next/link";
 import { ProductsInCart } from "./ui/ProductsInCart";
 import { PlaceOrder } from "./ui/PlaceOrder";
+import { IoCartOutline } from "react-icons/io5";
 
 export default function CheckoutPage() {
   return (
-    <div className="flex flex-col md:flex-row md:gap-10 md:mt-10 md:items-start justify-center md:mb-10 px-4">
-      <div className="flex flex-col justify-evenly md:pt-6">{/* bg-red-400 */}
-        <Title title="Verificar orden"/>
-        {/* Carrito */}
-        <div className="flex flex-col mt-5">
-          <span className="text-xl">Ajustar elementos</span>
-          <Link href="/cart" className="underline mb-5">
+    <div className="grid lg:grid-cols-3 gap-10 mx-auto">
+      <div className="lg:col-span-2 grid-cols-1">
+        <div className="flex sm:flex-row flex-col sm:items-center ml-4 mb-4 sm:mb-0 justify-between">
+          <Title title="Verificar orden"/> 
+          {/* <p className="text-sm mt-4 text-gray-500">4 productos en el carrito</p> */}
+          <Link href="/" className="underline flex items-center gap-2">
             Editar carrito
+            <IoCartOutline className="mt-1"/>
           </Link >
+        </div>
 
-        {/* Items */}
-        <ProductsInCart />
+        {/* Carrito */}
+        {/* <span className="text-xl">Agregar mas items</span> */}
+        <div className="overflow-auto lg:h-[500px] overflow-x-hidden lg:mb-6 lg:mt-2 scroll-smooth">
+          {/* Items */}
+          <ProductsInCart />
         </div>
       </div>
       {/* Checkout - Resumen de la compra*/}
-      <PlaceOrder />
-    </div>
-  );
+      <div className="lg:col-span-1">
+          <PlaceOrder />
+      </div>
+  </div>
+  )
+
+
+  
+  // return (
+  //   <div className="flex justify-center gap-4 md:gap-16 flex-col md:flex-row">
+  //     <div className="flex flex-col xl:min-w-[600px] lg:min-w-[500px]  md:w-[400px] w-auto mx-4 px-4 md:px-0 md:mx-0">{/* bg-red-400 */}
+  //       <Title title="Verificar orden"/>
+  //       {/* Carrito */}
+  //       <span className="text-xl">Ajustar elementos</span>
+  //       <Link href="/cart" className="underline mb-5">
+  //         Editar carrito
+  //       </Link >
+  //       <div className="overflow-auto md:h-[500px] overflow-x-hidden md:mb-20 scroll-smooth">
+  //         {/* Items */}
+  //         <ProductsInCart />
+  //       </div>
+  //     </div>
+  //     {/* Checkout - Resumen de la compra*/}
+  //     <PlaceOrder />
+  //   </div>
+  // );
 }
