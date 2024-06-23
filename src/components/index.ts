@@ -7,7 +7,8 @@ export * from './product/stock-label/StockLabel'
 export * from './products/produtc-grid/ProductGrid'
 export * from './products/produtc-grid/ProductGridItem'
 
-export * from './provider/Provider'
+export * from './providers/Providers'
+export * from './paypal/PaypalButton'
 
 export * from './ui/footer/Footer'
 export * from './ui/not-found/PageNotFound'

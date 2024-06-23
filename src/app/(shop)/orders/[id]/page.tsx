@@ -1,5 +1,5 @@
 import { getOrderById } from "@/actions";
-import { DeliveryAddress, GetOrderSummary, Title, TotalOrderSummary } from "@/components";
+import { DeliveryAddress, GetOrderSummary, PaypalButton, Title, TotalOrderSummary } from "@/components";
 import { currencyFormat } from "@/utils";
 import clsx from "clsx";
 import Image from "next/image";
@@ -103,7 +103,8 @@ export default async function OrdersByIdPage({ params }: Props) {
         />
 
         <div className="mt-5 w-full lg:w-[300px]">
-          <div
+          <PaypalButton />
+          {/* <div
             className={clsx(
               "flex items-center rounded-lg py-2 px-3.5 text-xs font-bold text-white",
               {
@@ -116,7 +117,7 @@ export default async function OrdersByIdPage({ params }: Props) {
             <span className="mx-2">
               {order?.isPaid ? "Pagada" : "No pagada"}
             </span>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
