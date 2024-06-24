@@ -25,7 +25,7 @@ export default async function OrdersByIdPage({ params }: Props) {
 
   return (
     <div className="flex justify-center gap-4 md:gap-16 flex-col md:flex-row">
-      <div className="flex flex-col xl:min-w-[600px] lg:min-w-[500px] md:w-[400px] w-auto mx-4 px-4 md:px-0 md:mx-0 h-[100%]">
+      <div className="flex flex-col lg:min-w-[500px] md:w-[400px] w-auto mx-4 px-4 md:px-0 md:mx-0">
         <Title
           className="text-sm mt-0 mb-0 "
           title={`Orden #${id.split("-").at(-1)}`}
@@ -77,7 +77,7 @@ export default async function OrdersByIdPage({ params }: Props) {
       </div>
 
       {/* Checkout - Resumen de la compra*/}
-      <div className="bg-white rounded-xl shadow-2xl p-7 mb-10 mx-4 md:mx-0">
+      <div className="bg-white rounded-xl shadow-2xl p-7 mb-10 mx-4 md:mx-0 lg:w-[350px] lg:h-[715px] overflow-auto">
         <DeliveryAddress
           address={{
             firstName: address!.firstName,
@@ -102,8 +102,8 @@ export default async function OrdersByIdPage({ params }: Props) {
           mt="mt-5"
         />
 
-        <div className="mt-5 w-full lg:w-[300px]">
-          <PaypalButton />
+        <div className="mt-4 w-full overflow-auto">
+          <PaypalButton amount={order!.total} orderId={order!.id}/>
           {/* <div
             className={clsx(
               "flex items-center rounded-lg py-2 px-3.5 text-xs font-bold text-white",
