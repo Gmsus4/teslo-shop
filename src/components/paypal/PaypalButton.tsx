@@ -2,6 +2,7 @@
 
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js"
 import { CreateOrderData, CreateOrderActions } from "@paypal/paypal-js"
+import { setTransactionId } from "@/actions";
 
 interface Props {
     orderId: string;
@@ -33,19 +34,17 @@ export const PaypalButton = ({ orderId, amount}:Props) => {
             ]
         })
 
-        //Todo: guardar el ID en la orden en la base de datos
-        // actions/payments/setTransactionId
-        // if(!ok){
-        //     throw new Error('No se pudo actualizar la orden');
-        // }
+        const { ok } = await setTransactionId(orderId, transactionId);
+        if(!ok){
+            throw new Error("No se pudo actualizar la orden");
+        }
 
-        console.log(transactionId); //Necesito almacenarlo en nuestra base de datos
         return transactionId;
     }
 
   return (
     <PayPalButtons 
-        createOrder={ createOrder } //
+        createOrder={ createOrder } 
     />
   )
 }
