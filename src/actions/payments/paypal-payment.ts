@@ -1,5 +1,7 @@
 "use server";
 
+import { PayPalOrderStatusResponse } from "@/interfaces";
+
 export const paypalCheckPayment = async (paypalTransactionId: string | undefined) => {
   const authToken = await getPayPalBearerToken();
   console.log({authToken});
@@ -9,6 +11,28 @@ export const paypalCheckPayment = async (paypalTransactionId: string | undefined
       message: 'No se pudo obtener el token de verificación'
     }
   }
+
+  const resp = await verifyPayPalPayment(paypalTransactionId, authToken);
+
+  if( !resp ) {
+    return {
+      ok: false,
+      message: 'Error al verificar el pago'
+    }
+  }
+
+  const { status, purchase_units } = resp;
+  //const = {} = purchase_units[0]; //Todo: invoice ID
+
+  if(status !== 'COMPLETED'){
+    return {
+      ok: false,
+      message: 'Aún no se ha pagado en Paypal'
+    }
+  }
+
+  //Todo: Realizar la actualizacion en nuestra base de datos
+  console.log({status, purchase_units})
 };
 
 const getPayPalBearerToken = async ():Promise<string | null > => { //Obtener nuestro token de acceso
@@ -53,3 +77,30 @@ const getPayPalBearerToken = async ():Promise<string | null > => { //Obtener nue
     return null; //Retornamos null si existe un error.
   }
 };
+
+
+const verifyPayPalPayment = async(paypalTransactionId: string | undefined, bearerToken: string):Promise<PayPalOrderStatusResponse | null > => {
+  //Necesitamos paypalTransactionId y el authToken
+
+  //Gestionamos la url para hacer la petición para obtener la orden de paypal
+  const paypalOrderUrl = `${process.env.PAYPAL_ORDERS_URL}/${paypalTransactionId}`;
+
+  //Establecemos los headers de la petición
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", `Bearer ${bearerToken}`);//En el Bearer pondremos el authToken, el que se obtiene de la función getPayPalBearerToken()
+
+  //Configuramos las opciones de la petición
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+  };
+
+  //Hacemos un try-catch para hacer la petición
+  try {
+    const resp = await fetch(paypalOrderUrl, requestOptions).then(r => r.json()); //Hacemos la petición y la respuesta la convertimos a json
+    return resp; //Retornamos la respuesta
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
