@@ -1,6 +1,7 @@
 "use server";
 
 import { PayPalOrderStatusResponse } from "@/interfaces";
+import prisma from "@/lib/prisma";
 
 export const paypalCheckPayment = async (paypalTransactionId: string | undefined) => {
   const authToken = await getPayPalBearerToken();
@@ -32,7 +33,25 @@ export const paypalCheckPayment = async (paypalTransactionId: string | undefined
   }
 
   //Todo: Realizar la actualizacion en nuestra base de datos
-  console.log({status, purchase_units})
+  try {
+    console.log({status, purchase_units})
+    await prisma.order.update({
+      where: { id: '97975403-7541-469f-a39f-904c6f423215'},
+      data: {
+        isPaid: true,
+        paidAt: new Date()
+      }
+    })
+
+    //Todo: Revalidar Path
+    
+  } catch (error) {
+    console.log(error);
+    return {
+      ok: false,
+      message: 'El pago no se pudo realizar'
+    }
+  }
 };
 
 const getPayPalBearerToken = async ():Promise<string | null > => { //Obtener nuestro token de acceso
@@ -70,7 +89,10 @@ const getPayPalBearerToken = async ():Promise<string | null > => { //Obtener nue
   //Try-Catch para el manejo de la petición
   try {
     //Hacemos la petición
-    const result = await fetch(oauth2Url, requestOptions).then(r => r.json());
+    const result = await fetch(oauth2Url, {
+      ...requestOptions,
+      cache: 'no-store'
+    }).then(r => r.json());
     return result.access_token; //Retornamos el valor access_tooken del resultado de la petición
   } catch (error) {
     console.log(error); //Mostramos el posible error en consola
@@ -97,7 +119,10 @@ const verifyPayPalPayment = async(paypalTransactionId: string | undefined, beare
 
   //Hacemos un try-catch para hacer la petición
   try {
-    const resp = await fetch(paypalOrderUrl, requestOptions).then(r => r.json()); //Hacemos la petición y la respuesta la convertimos a json
+    const resp = await fetch(paypalOrderUrl, {
+      ...requestOptions,
+      cache: 'no-store'
+    }).then(r => r.json()); //Hacemos la petición y la respuesta la convertimos a json
     return resp; //Retornamos la respuesta
   } catch (error) {
     console.log(error);
