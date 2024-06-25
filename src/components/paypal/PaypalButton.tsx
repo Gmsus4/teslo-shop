@@ -14,7 +14,7 @@ export const PaypalButton = ({ orderId, amount}:Props) => {
     const rountedAmount = (Math.round(amount * 100)) / 100;
     if( isPending ){
         return (
-            <div className="animate-pulse">
+            <div className="animate-pulse h-[112px]">
                 <div className="h-9 bg-gray-300 rounded" />
                 <div className="h-9 bg-gray-300 rounded mt-2"/>
             </div>

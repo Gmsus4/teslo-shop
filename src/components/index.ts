@@ -10,6 +10,8 @@ export * from './products/produtc-grid/ProductGridItem'
 export * from './providers/Providers'
 export * from './paypal/PaypalButton'
 
+export * from './orders/OrderStatus'
+
 export * from './ui/footer/Footer'
 export * from './ui/not-found/PageNotFound'
 export * from './ui/pagination/Pagination'

@@ -2,6 +2,7 @@ import { getOrderById } from "@/actions";
 import {
   DeliveryAddress,
   GetOrderSummary,
+  OrderStatus,
   PaypalButton,
   Title,
   TotalOrderSummary,
@@ -10,7 +11,6 @@ import { currencyFormat } from "@/utils";
 import clsx from "clsx";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { IoCartOutline } from "react-icons/io5";
 
 interface Props {
   params: {
@@ -36,18 +36,7 @@ export default async function OrdersByIdPage({ params }: Props) {
           className="text-sm mt-0 mb-0 "
           title={`Orden #${id.split("-").at(-1)}`}
         />
-        <div
-          className={clsx(
-            "flex items-center rounded-lg py-2 px-3.5 text-xs font-bold text-white mb-4",
-            {
-              "bg-red-500": !order!.isPaid,
-              "bg-green-700": order!.isPaid,
-            }
-          )}
-        >
-          <IoCartOutline size={30} />
-          <span className="mx-2">{order?.isPaid ? "Pagada" : "No pagada"}</span>
-        </div>
+        <OrderStatus isPaid={order?.isPaid ?? false}/>
         {/* Carrito */}
         <div className="overflow-x-hidden overflow-auto md:h-[600px] scroll-smooth">
           {/* Items */}
@@ -95,29 +84,45 @@ export default async function OrdersByIdPage({ params }: Props) {
       </div>
 
       {/* Checkout - Resumen de la compra*/}
-      <div className="bg-white rounded-xl shadow-2xl p-7 mb-10 mx-4 md:mx-0 lg:w-[350px] lg:h-[715px] overflow-auto">
-        <DeliveryAddress
-          address={{
-            firstName: address!.firstName,
-            lastName: address!.lastName,
-            address: address!.address,
-            address2: undefined,
-            postalCode: address!.postalCode,
-            city: address!.city,
-            country: "",
-            phone: address!.phone,
-            countryId: address?.countryId,
-          }}
-        />
-        <GetOrderSummary
-          itemsInCart={order!.itemsInOrder}
-          subTotal={order!.subTotal}
-          tax={order!.tax}
-        />
-        <TotalOrderSummary total={order!.total} mb="mb-2" mt="mt-5" />
+      <div className="bg-white rounded-xl shadow-2xl p-7 mb-10 mx-4 md:mx-0 lg:w-[350px] lg:h-[715px] overflow-auto flex flex-col justify-between">
+        <div>
+          <DeliveryAddress
+            address={{
+              firstName: address!.firstName,
+              lastName: address!.lastName,
+              address: address!.address,
+              address2: undefined,
+              postalCode: address!.postalCode,
+              city: address!.city,
+              country: "",
+              phone: address!.phone,
+              countryId: address?.countryId,
+            }}
+          />
+          <GetOrderSummary
+            itemsInCart={order!.itemsInOrder}
+            subTotal={order!.subTotal}
+            tax={order!.tax}
+          />
+        </div>
+        <div>
+          <TotalOrderSummary total={order!.total} mb="mb-2" mt="mt-5" />
 
-        <div className="mt-4 w-full overflow-auto">
-          <PaypalButton amount={order!.total} orderId={order!.id} />
+          <div className={
+            clsx(
+              'mt-4 w-full overflow-auto',
+              {
+                'h-[112px]': !order?.isPaid
+              }
+            )
+          }>
+            {
+              order?.isPaid
+                ? ( <OrderStatus isPaid={order?.isPaid ?? false}/>)
+                : ( <PaypalButton amount={order!.total} orderId={order!.id} />
+                )
+            }
+          </div>
         </div>
       </div>
     </div>
