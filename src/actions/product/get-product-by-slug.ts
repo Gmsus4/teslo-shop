@@ -11,7 +11,8 @@ export const getProductBySlug = async( slug: string ) => {
             include: { //Que incluya el ProductImage, seleccionando solamente el url
                 ProductImage: {
                     select: {
-                        url: true
+                        url: true,
+                        id: true
                     }
                 }
             }
