@@ -1,7 +1,7 @@
 'use client'
 
+import { ChangeUserRole } from "@/actions";
 import type { User } from "@/interfaces";
-import { IoCardOutline } from "react-icons/io5";
 
 interface Props {
     users: User[];
@@ -38,7 +38,7 @@ export const UsersTable = ({users}:Props) => {
               <select  
                   className="text-sm text-gray-900 w-full p-2 cursor-pointer"  
                   value={user.role} 
-                  onChange={e => console.log(e.target.value)}>
+                  onChange={e => ChangeUserRole(user.id, e.target.value as 'admin' | 'user') }>
                   <option value="admin">Admin</option>
                   <option value="user">User</option>
                 </select>
