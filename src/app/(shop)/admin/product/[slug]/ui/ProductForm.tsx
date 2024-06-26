@@ -1,6 +1,7 @@
 "use client";
 
 import { Categories, Product, ProductImage } from "@/interfaces";
+import clsx from "clsx";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 
@@ -33,7 +34,10 @@ export const ProductForm = ({ product, categories }: Props) => {
   const {
     handleSubmit,
     register,
-    formState: { isValid }
+    formState: { isValid },
+    getValues,
+    setValue,
+    watch, //Cuando hay que volver a renderizar en caso de que exista un cambio en algun formulario
   } = useForm<FormInputs>({
     defaultValues: {
       ...product,
@@ -44,9 +48,18 @@ export const ProductForm = ({ product, categories }: Props) => {
     }
   });
 
+  watch('sizes'); //Se este redibujando si los sizes cambian
+
+  const onSizeChanged = (size: string) => {
+    const sizes = new Set(getValues('sizes')); //Un array con valores unicos, sus valores no pueden ser duplicados
+    sizes.has(size) ? sizes.delete(size) : sizes.add(size); //Si el arreglo contiene el valor de size, entonces lo elimina, sino entonces lo agrega
+
+    setValue('sizes', Array.from(sizes)) //Transforma el sizes en un arreglo
+  }
+
   const onSubmit = async(data: FormInputs) => {
     console.log({data});
-
+    
   }
 
   return (
@@ -121,7 +134,17 @@ export const ProductForm = ({ product, categories }: Props) => {
             {
               sizes.map( size => (
                 // bg-blue-500 text-white <--- si está seleccionado
-                <div key={ size } className="flex  items-center justify-center w-10 h-10 mr-2 border rounded-md">
+                <div 
+                  key={ size }
+                  onClick={() => onSizeChanged(size)}
+                  className={
+                    clsx(
+                      'p-2 border rounded-md cursor-pointer mr-2 mb-2 w-14 transition-all text-center',
+                      {
+                        'bg-blue-500 text-white': getValues('sizes').includes(size)
+                      }
+                    )
+                  }>
                   <span>{ size }</span>
                 </div>
               ))
