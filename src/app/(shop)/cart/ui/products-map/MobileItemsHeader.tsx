@@ -1,4 +1,4 @@
-import { QuantitySelector } from "@/components";
+import { ProductImage, QuantitySelector } from "@/components";
 import type { CartProduct } from "@/interfaces";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,8 +18,8 @@ export const MobileItemsHeader = ({
   return (
     <>
       <div className="flex items-center my-1 w-full">
-        <Image
-          src={`/products/${product.image}`}
+        <ProductImage
+          src={product.image}
           width={100}
           height={100}
           style={{

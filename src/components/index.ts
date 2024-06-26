@@ -26,3 +26,5 @@ export * from './ui/order/GetOrderSummary'
 
 export * from './ui/skeleton/checkout/SkeletonPlaceOrder'
 export * from './ui/skeleton/checkout/SkeletonProductsInCart'
+
+export * from './product/product-image/ProductImage'
