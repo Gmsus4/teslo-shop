@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useForm } from "react-hook-form";
 
 interface Props {
-  product: Product & { ProductImage?: ProductImage[] };
+  product: Partial<Product> & { ProductImage?: ProductImage[] };
   // categories: {
   //   id: string;
   //   name: string;
@@ -42,7 +42,7 @@ export const ProductForm = ({ product, categories }: Props) => {
   } = useForm<FormInputs>({
     defaultValues: {
       ...product,
-      tags: product.tags.join(', '), //Para convertirlo a un string, porque este era un array
+      tags: product.tags?.join(', '), //Para convertirlo a un string, porque este era un array
       sizes: product.sizes ?? [] //Si no existe, nos retorne un array vacío
 
       //Todo: Images
@@ -60,9 +60,13 @@ export const ProductForm = ({ product, categories }: Props) => {
 
   const onSubmit = async(data: FormInputs) => {
     const formData = new FormData();
-
+    
     const {...productToSave} = data;
-    formData.append('id', product.id ?? '');
+
+    if(product.id){
+      formData.append('id', product.id ?? '')
+    }
+
     formData.append('title', productToSave.title);
     formData.append('slug', productToSave.slug);
     formData.append('description', productToSave.description);

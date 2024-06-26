@@ -12,7 +12,7 @@ interface Props{
 export default async function ProductPage({params}:Props) {
     const { slug } = params;
     
-    //Promesasl Uno por uno
+    //Promesas Uno por uno
     // const product = await getProductBySlug(slug);
     // const categories = await getCategories();
 
@@ -23,7 +23,7 @@ export default async function ProductPage({params}:Props) {
     ])
 
     //Todo: New
-    if(!product){
+    if(!product && slug !== 'new' ){
         redirect('/admin/products')
     }
 
@@ -32,7 +32,7 @@ export default async function ProductPage({params}:Props) {
   return (
     <>
       <Title title={ title }/>
-      <ProductForm product={product} categories={categories}/>
+      <ProductForm product={product ?? {}} categories={categories}/>
     </>
   );
 }
