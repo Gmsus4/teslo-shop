@@ -1,7 +1,7 @@
 'use client'
 
+import { ProductImage } from "@/components/product/product-image/ProductImage";
 import { Product } from "@/interfaces"
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -15,10 +15,10 @@ export const ProductGridItem = ({ product }: Props) => {
   return (
     <div className="rounded-md overflow-hidden fade-in">
         <Link href={`/product/${ product.slug }`} >
-            <Image 
-                onMouseEnter={ () => setDisplayImage(product.images[1]) }
+            <ProductImage 
+                onMouseEnter={ () => setDisplayImage(product.images[1] ? product.images[1] : product.images[0])}
                 onMouseLeave={ () => setDisplayImage(product.images[0]) }
-                src={`/products/${displayImage}`} 
+                src={displayImage} 
                 alt={ product.title}
                 className="w-full object-cover" //Se quede dentro de la imagen y se expanda en el espacio que tiene disponible
                 width={ 500 }
