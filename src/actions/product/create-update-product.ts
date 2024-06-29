@@ -2,6 +2,7 @@
 
 import prisma from '@/lib/prisma';
 import { Gender, Product, Size } from '@prisma/client'; // Importa el enum Gender desde Prisma Client
+import { revalidatePath } from 'next/cache';
 import { z } from 'zod'; // Importa la biblioteca zod para validación de esquemas
 
 // Define el esquema del producto utilizando zod
@@ -41,49 +42,62 @@ export const createUpdateProduct = async (formData: FormData) => {
 
     const { id, ...rest } = product;
 
-    const primsaTx = await prisma.$transaction(async (tx) => {
+    try {
+        const primsaTx = await prisma.$transaction(async (tx) => {
 
-        let product: Product;
-        const tagsArray = rest.tags.split(',').map(tag => tag.trim().toLowerCase());
-
-        if(id){
-            //Actualizar
-            product = await prisma.product.update({
-                where: { id: id },
-                data: {
-                    ...rest,
-                    sizes: {
-                        set: rest.sizes as Size[]
-                    },
-                    tags: {
-                        set: tagsArray
+            let product: Product;
+            const tagsArray = rest.tags.split(',').map(tag => tag.trim().toLowerCase());
+    
+            if(id){
+                //Actualizar
+                product = await prisma.product.update({
+                    where: { id: id },
+                    data: {
+                        ...rest,
+                        sizes: {
+                            set: rest.sizes as Size[]
+                        },
+                        tags: {
+                            set: tagsArray
+                        }
                     }
-                }
-            });
-
-        } else {
-            //Crear
-            product = await prisma.product.create({
-                data: {
-                    ...rest,
-                    sizes: {
-                        set: rest.sizes as Size[]
-                    },
-                    tags: {
-                        set: tagsArray
+                });
+    
+            } else {
+                //Crear
+                product = await prisma.product.create({
+                    data: {
+                        ...rest,
+                        sizes: {
+                            set: rest.sizes as Size[]
+                        },
+                        tags: {
+                            set: tagsArray
+                        }
                     }
-                }
-            })
-        }
-
-        console.log({ product});
+                })
+            }
+    
+            console.log({ product});
+    
+            return {
+                product
+            }
+        });
+        
+        //Todo: RevalidatePaths
+        revalidatePath('/admin/products');
+        revalidatePath(`/admin/product/${product.slug}`);
+        revalidatePath(`/products/${product.slug}`);
 
         return {
-            product
+            ok: true,
+            product: primsaTx.product
         }
-    });
-    //Todo: RevalidatePaths
-    return {
-        ok: true // Retorna un objeto indicando que la operación fue exitosa
-    };
+    } catch (error) {
+        return {
+            ok: false,
+            message: 'Revisar los logs, no se pudo actualizar/crear'
+        }
+    }
 };
