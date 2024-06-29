@@ -4,6 +4,8 @@ import prisma from '@/lib/prisma';
 import { Gender, Product, Size } from '@prisma/client'; // Importa el enum Gender desde Prisma Client
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod'; // Importa la biblioteca zod para validación de esquemas
+import { v2 as cloudinary } from 'cloudinary';
+cloudinary.config(process.env.CLOUDINARY_URL ?? '');
 
 // Define el esquema del producto utilizando zod
 const productSchema = z.object({
@@ -81,7 +83,8 @@ export const createUpdateProduct = async (formData: FormData) => {
             //Proceso de carga y guardado de imagenes
             //Recorrer las imagenes y guardarlas
             if(formData.getAll('images')){
-                console.log(formData.getAll('images'));
+                const images = await uploadImages(formData.getAll('images') as File[]);
+                console.log(images);
             }
     
             return {
@@ -105,3 +108,26 @@ export const createUpdateProduct = async (formData: FormData) => {
         }
     }
 };
+
+const uploadImages = async(images: File[]) => {
+    try {
+        const uploadPormises = images.map(async (image) => {
+            try {
+                //Crear y convertir esa imagen como un string para subir esa imagen facilmente a cloudinary
+                const buffer = await image.arrayBuffer();
+                const base64Image = Buffer.from(buffer).toString('base64');
+    
+                return cloudinary.uploader.upload(`data:image/png;base64,${base64Image}`, { folder: 'teslo-shop' }).then(r => r.secure_url)
+            } catch (error) {
+                console.log(error);
+                return null;  
+            }
+        });
+
+        const uploadedImages = await Promise.all(uploadPormises);
+        return uploadedImages;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+}   
