@@ -6,12 +6,20 @@ import { Pagination, Title } from '@/components';
 import { redirect } from 'next/navigation';
 import { UsersTable } from './ui/UsersTable';
 
-export default async function OrdersPage() {
-  const {ok, users = []} = await getPaginatedUsers();
+interface Props {
+  searchParams: {
+    page?: string;
+  }
+}
+
+export default async function OrdersPage({ searchParams }:Props) {
+  const page = searchParams.page ? parseInt( searchParams.page ) : 1; //No cambio nada este archivo
+
+  const {ok, users = [], totalPages} = await getPaginatedUsers({page, take: 12});
 
   if(!ok){
     redirect('/auth/login')
-  }
+  } 
 
   return (
     <>
@@ -19,7 +27,7 @@ export default async function OrdersPage() {
 
       <div className="mb-10 overflow-auto">
         <UsersTable users={ users }/>
-        <Pagination totalPages={4} />
+        <Pagination totalPages={totalPages!} />
       </div>
     </>
   );
