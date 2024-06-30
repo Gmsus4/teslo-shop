@@ -103,7 +103,7 @@ export const SearchPage = () => {
           <div>
             <div className="grid lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-10 w-full mt-4">
               {products.map((product) => (
-                <div className="md:max-w-md bg-white border border-gray-200 rounded-lg shadow w-full relative">
+                <div key={product.id} className="md:max-w-md bg-white border border-gray-200 rounded-lg shadow w-full relative">
                     <ProductImage
                       className="w-full rounded-t-lg cursor-default"
                       //   className="rounded-t-lg"
