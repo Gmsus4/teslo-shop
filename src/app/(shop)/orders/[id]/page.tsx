@@ -4,6 +4,7 @@ import {
   GetOrderSummary,
   OrderStatus,
   PaypalButton,
+  ProductImage,
   Title,
   TotalOrderSummary,
 } from "@/components";
@@ -48,8 +49,8 @@ export default async function OrdersByIdPage({ params }: Props) {
               <div className="w-full h-0.5 rounded bg-gray-200" />
               <div className="flex mb-1 justify-between items-center sm:gap-10 w-full">
                 <div className="flex items-center my-1 w-full">
-                  <Image
-                    src={`/products/${item.product.ProductImage[0].url}`}
+                  <ProductImage
+                    src={item.product.ProductImage[0].url}
                     width={100}
                     height={100}
                     style={{

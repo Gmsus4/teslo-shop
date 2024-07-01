@@ -26,12 +26,14 @@ export const PlaceOrder = () => {
 
     useEffect(() => {
         setLoaded(true)
-        if(itemsInCart === 0){
-          redirect('/empty')
-        }
-    }, []) /* Ojo que me pide agregarel itemsInCart pero no se debe hacer porque si no redireciona al empty cuando quiero que los mande al order id */
+    }, [])
 
     const onPlaceOrder = async() => {
+      if(itemsInCart === 0){
+        router.replace('/empty')
+        return;
+      }
+      
       setIsPlacingOrder(true);
       
       const productsToOrder = cart.map(product => ({
