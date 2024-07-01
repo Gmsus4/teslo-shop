@@ -4,6 +4,7 @@
 @import url('loadingHamster.css');
 @import url('loadingCart.css');
 @import url('addToCart.css');
+@import url('spinnerImage.css');
 
 :root {
   --primary: #274494;
