@@ -3,7 +3,12 @@
 import { auth } from "@/auth.config"
 import prisma from "@/lib/prisma";
 
-export const getPaginatedOrders = async() => {
+interface PaginationOptions {
+    page?: number;
+    take?: number; 
+}
+
+export const getPaginatedOrders = async({page = 1, take = 12}:PaginationOptions) => {
     const session = await auth();
 
     if(session?.user.role !== 'admin'){
@@ -17,6 +22,8 @@ export const getPaginatedOrders = async() => {
         orderBy: {
             createdAt: 'desc'
         },
+        take: take,
+        skip: (page - 1) * take,
         
         include: {
             OrderAddress: {
@@ -24,12 +31,18 @@ export const getPaginatedOrders = async() => {
                     firstName: true,
                     lastName: true
                 }
-            }
+            },
+            user: true
         }
     });
 
+    //Obtener el total de paginas
+    const totalCount = await prisma.user.count({}); //Total de los usuarios en la base de datos
+    const totalPages = Math.ceil(totalCount / take);
+
     return { 
         ok: true,
-        orders: orders
+        orders: orders,
+        totalPages: totalPages
     }
 }

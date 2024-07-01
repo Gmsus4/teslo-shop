@@ -105,7 +105,7 @@ export const ProfileCart = ({ session, imageUrl }: Props) => {
                   src={
                     imageUrl?.image
                       ? imageUrl.image
-                      : "https://res.cloudinary.com/dozzu7xhx/image/upload/v1686943818/perfil/azbel14qetbdbs282zem.jpg"
+                      : "https://res.cloudinary.com/dozzu7xhx/image/upload/v1719806561/perfil/p8osbgzrxslbx2bygvft.png"
                   }
                   alt="Bonnie image"
                 />

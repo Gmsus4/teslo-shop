@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeUserRole } from "@/actions";
-import { ProductImage, Title } from "@/components";
+import { ProductImage } from "@/components";
 import type { User } from "@/interfaces";
 
 interface Props {
@@ -14,7 +14,7 @@ export const UsersTable = ({ users }: Props) => {
       <div className="flow-root">
         <ul role="list" className="divide-y divide-gray-200">
           {users.map((user) => (
-            <li className="py-3 sm:py-4">
+            <li key={user.id} className="py-3 sm:py-4">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <ProductImage 
