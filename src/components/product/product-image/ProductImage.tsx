@@ -26,7 +26,8 @@ export const ProductImage = ({
         ? src.startsWith('http') //htttp://urlcompletodelaimagen.jpg
             ? src
             : `/products/${src}`
-        : '/imgs/placeholder.jpg'
+        // : '/imgs/placeholder.jpg'
+        : 'https://res.cloudinary.com/dozzu7xhx/image/upload/v1719806561/perfil/p8osbgzrxslbx2bygvft.png'
   return (
     <Image
       src={ localSrc }

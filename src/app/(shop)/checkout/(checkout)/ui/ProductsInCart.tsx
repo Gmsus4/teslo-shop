@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useCartStore } from "@/store";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { NotLoadedButton, SkeletonProductsInCart } from "@/components";
+import { NotLoadedButton, ProductImage, SkeletonProductsInCart } from "@/components";
 
 export const ProductsInCart = () => {
   const [loaded, setLoaded] = useState(false);
@@ -32,8 +32,8 @@ export const ProductsInCart = () => {
           {/* <div className="w-full h-0.5 rounded bg-gray-200"/> */}
           <div className="flex mb-1 justify-between items-center sm:gap-10 w-full">
             <div className="flex items-center my-1 w-full">
-              <Image
-                src={`/products/${product.image}`}
+              <ProductImage
+                src={product.image}
                 width={100}
                 height={100}
                 style={{

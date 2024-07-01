@@ -5,7 +5,7 @@ import { ProductImage } from "@/components";
 import { useState } from "react";
 import { RiImageAddLine } from "react-icons/ri";
 import { useForm } from "react-hook-form";
-import { uploadImageUser } from "@/actions";
+import { deleteProfileUserImage, uploadImageUser } from "@/actions";
 import { useRouter } from "next/navigation";
 import { Role } from "@prisma/client";
 import clsx from "clsx";
@@ -51,10 +51,11 @@ export const ProfileCart = ({ session, imageUrl }: Props) => {
 
   const onSubmit = async (data: Inputs) => {
     setIsLoading(true);
+    await deleteProfileUserImage(imageUrl?.image ?? '');
     const formData = new FormData();
     const { image } = data;
     // const urlImg = image[0].name;
-
+    
     formData.append("image", image[0]);
     const { ok } = await uploadImageUser(formData, session.user.id);
 
@@ -62,6 +63,7 @@ export const ProfileCart = ({ session, imageUrl }: Props) => {
       alert("Foto de perfil no se pudo actualizar");
       return;
     }
+
 
     router.replace(`/profile`);
     console.log("Subiendo imagen...");

@@ -29,7 +29,7 @@ export const PlaceOrder = () => {
         if(itemsInCart === 0){
           redirect('/empty')
         }
-    }, [itemsInCart])
+    }, []) /* Ojo que me pide agregarel itemsInCart pero no se debe hacer porque si no redireciona al empty cuando quiero que los mande al order id */
 
     const onPlaceOrder = async() => {
       setIsPlacingOrder(true);
