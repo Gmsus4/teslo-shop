@@ -1,13 +1,12 @@
 "use client";
 
-import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import type { Address, Country } from "@/interfaces";
 import { useAddressStore } from "@/store";
-import { useEffect, useRef, useState } from "react";
-import { deleteUserAddress, getCodigoPostal, setUserAdress } from "@/actions";
+import { useState } from "react";
+import { createNewAddress, deleteUserAddress, getCodigoPostal, setUserAdress } from "@/actions";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { MdError } from "react-icons/md";
@@ -23,7 +22,6 @@ interface FormInputs {
   city: string;
   country: string;
   phone: string;
-  rememberAddress?: boolean;
 }
 
 interface Props {
@@ -86,11 +84,9 @@ const addressSchema = yup.object().shape({
     .string()
     .matches(/^\+?[1-9]\d{1,14}$/, "El número de teléfono no es válido")
     .required("El teléfono es obligatorio"),
-
-  rememberAddress: yup.boolean(),
 });
 
-export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
+export const NewAddressPage = ({ countries, userStoreAddress = {} }: Props) => {
   const router = useRouter();
   const {
     handleSubmit,
@@ -112,14 +108,7 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
     required: true, //Si la persona no esta autenticada la va a mandar al login
   });
 
-  const setAddress = useAddressStore((state) => state.setAddress);
-  const address = useAddressStore((state) => state.address);
-
-  // useEffect(() => {
-  //   if (address.firstName) {
-  //     reset(address);
-  //   }
-  // }, [address, reset]);
+//   const setAddress = useAddressStore((state) => state.setAddress);
 
   const [colonias, setColonias] = useState([]);
   const [isCheckPostalCode, setIsCheckPostalCode] = useState(false);
@@ -129,7 +118,6 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
   const validatedCodigoPostal = async() => {
     setIsLoadingPostalCode(true);
     const postalCode = getValues('postalCode');
-    
     const data = await getCodigoPostal(postalCode);
     if(!data){
       setIsErrorPostalCode(true);
@@ -138,316 +126,31 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
     };
     setValue("state", data.estado);
     setValue("city", data.municipio);
-    // setValue("suburb", data.colonias);
     setColonias(data.colonias);
     setIsCheckPostalCode(true);
     setIsLoadingPostalCode(false);
     setIsErrorPostalCode(false)
-    // setValue("suburb", data.colonias);
-
-
-    console.log(data);
-    // console.log(dataPostalCode);
   }
+
   const onSubmit = async (data: FormInputs) => {
     //console.log({data});
-    const { rememberAddress, ...restAddress } = data;
-    setAddress(restAddress);
+    const { ...restAddress } = data;
+    console.log(restAddress);
+    createNewAddress(restAddress, session!.user.id);
+    // setAddress(restAddress);
 
-    if (rememberAddress) {
-      await setUserAdress(restAddress, session!.user.id);
-    } else {
-      await deleteUserAddress(session!.user.id);
-    }
-
-    router.push("/checkout");
+    // if (rememberAddress) {
+    //   await setUserAdress(restAddress, session!.user.id);
+    // } else {
+    //     await deleteUserAddress(session!.user.id);
+    // }
+    
+    // await crearNuevoAddress(restAddress, session!.user.id); //Todo: Crear nuevo address
+    router.push("/address");
   };
 
   return (
     <>
-      {/* <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="grid grid-cols-1 gap-2 sm:gap-5 sm:grid-cols-2"
-      >
-        <div className="flex flex-col mb-2">
-          <label
-            htmlFor="name"
-            className={clsx(
-              "block mb-2 text-sm font-medium text-gray-900 required",
-              {
-                "text-red-600": !!errors.firstName?.message,
-              }
-            )}
-          >
-            Nombres
-          </label>
-          <input
-            type="text"
-            {...register("firstName", { required: true })}
-            className={clsx("px-5 py-2 border bg-gray-200 rounded w-full", {
-              "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500":
-                !!errors.firstName?.message,
-              "bg-green-50 border border-green-500 text-green-900 placeholder-green-700 focus:ring-green-500 focus:border-green-500":
-                isValid,
-            })}
-          />
-          {errors.firstName?.message && (
-            <p className="mt-2 text-xs text-red-600 dark:text-red-500">
-              <span className="font-medium">Oops! </span>
-              {errors.firstName.message}
-            </p>
-          )}
-        </div>
-        <div className="flex flex-col mb-2">
-          <label
-            htmlFor="name"
-            className={clsx(
-              "block mb-2 text-sm font-medium text-gray-900 required",
-              {
-                "text-red-600": !!errors.lastName?.message,
-              }
-            )}
-          >
-            Apellidos
-          </label>
-          <input
-            type="text"
-            {...register("lastName", { required: true })}
-            className={clsx("px-5 py-2 border bg-gray-200 rounded w-full", {
-              "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500":
-                !!errors.lastName?.message,
-              "bg-green-50 border border-green-500 text-green-900 placeholder-green-700 focus:ring-green-500 focus:border-green-500":
-                isValid,
-            })}
-          />
-          {errors.lastName?.message && (
-            <p className="mt-2 text-xs text-red-600 dark:text-red-500">
-              <span className="font-medium">Oops! </span>
-              {errors.lastName.message}
-            </p>
-          )}
-        </div>
-
-        <div className="flex flex-col mb-2">
-          <label
-            htmlFor="name"
-            className={clsx(
-              "block mb-2 text-sm font-medium text-gray-900 required",
-              {
-                "text-red-600": !!errors.address?.message,
-              }
-            )}
-          >
-            Dirección
-          </label>
-          <input
-            type="text"
-            {...register("address", { required: true })}
-            className={clsx("px-5 py-2 border bg-gray-200 rounded w-full", {
-              "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500":
-                !!errors.address?.message,
-              "bg-green-50 border border-green-500 text-green-900 placeholder-green-700 focus:ring-green-500 focus:border-green-500":
-                isValid,
-            })}
-          />
-          {errors.address?.message && (
-            <p className="mt-2 text-xs text-red-600 dark:text-red-500">
-              <span className="font-medium">Oops! </span>
-              {errors.address.message}
-            </p>
-          )}
-        </div>
-
-        <div className="flex flex-col mb-2">
-          <label
-            htmlFor="name"
-            className={clsx(
-              "block mb-2 text-sm font-medium text-gray-900 required",
-              {
-                "text-red-600": !!errors.address2?.message,
-              }
-            )}
-          >
-            Dirección 2 (opcional)
-          </label>
-          <input
-            type="text"
-            {...register("address2")}
-            className={clsx("px-5 py-2 border bg-gray-200 rounded w-full", {
-              "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500":
-                !!errors.address2?.message,
-              "bg-green-50 border border-green-500 text-green-900 placeholder-green-700 focus:ring-green-500 focus:border-green-500":
-                isValid,
-            })}
-          />
-        </div>
-
-        <div className="flex flex-col mb-2">
-          <label
-            htmlFor="name"
-            className={clsx(
-              "block mb-2 text-sm font-medium text-gray-900 required",
-              {
-                "text-red-600": !!errors.postalCode?.message,
-              }
-            )}
-          >
-            Código postal
-          </label>
-          <input
-            type="text"
-            {...register("postalCode", { required: true })}
-            className={clsx("px-5 py-2 border bg-gray-200 rounded w-full", {
-              "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500":
-                !!errors.postalCode?.message,
-              "bg-green-50 border border-green-500 text-green-900 placeholder-green-700 focus:ring-green-500 focus:border-green-500":
-                isValid,
-            })}
-          />
-          {errors.postalCode?.message && (
-            <p className="mt-2 text-xs text-red-600 dark:text-red-500">
-              <span className="font-medium">Oops! </span>
-              {errors.postalCode.message}
-            </p>
-          )}
-        </div>
-
-        <div className="flex flex-col mb-2">
-          <label
-            htmlFor="name"
-            className={clsx(
-              "block mb-2 text-sm font-medium text-gray-900 required",
-              {
-                "text-red-600": !!errors.city?.message,
-              }
-            )}
-          >
-            Ciudad
-          </label>
-          <input
-            type="text"
-            {...register("city", { required: true })}
-            className={clsx("px-5 py-2 border bg-gray-200 rounded w-full", {
-              "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500":
-                !!errors.city?.message,
-              "bg-green-50 border border-green-500 text-green-900 placeholder-green-700 focus:ring-green-500 focus:border-green-500":
-                isValid,
-            })}
-          />
-          {errors.city?.message && (
-            <p className="mt-2 text-xs text-red-600 dark:text-red-500">
-              <span className="font-medium">Oops! </span>
-              {errors.city.message}
-            </p>
-          )}
-        </div>
-
-        <div className="flex flex-col mb-2">
-          <label
-            htmlFor="name"
-            className={clsx(
-              "block mb-2 text-sm font-medium text-gray-900 required",
-              {
-                "text-red-600": !!errors.country?.message,
-              }
-            )}
-          >
-            País
-          </label>
-          <select
-            {...register("country", { required: true })}
-            className={clsx("px-5 py-2 border bg-gray-200 rounded w-full", {
-              "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500":
-                !!errors.country?.message,
-              "bg-green-50 border border-green-500 text-green-900 placeholder-green-700 focus:ring-green-500 focus:border-green-500":
-                isValid,
-            })}
-          >
-            <option value="">[ Seleccione ]</option>
-            {countries.map((country) => (
-              <option key={country.id} value={country.id}>
-                {country.name}
-              </option>
-            ))}
-          </select>
-          {errors.country?.message && (
-            <p className="mt-2 text-xs text-red-600 dark:text-red-500">
-              <span className="font-medium">Oops! </span>
-              {errors.country.message}
-            </p>
-          )}
-        </div>
-
-        <div className="flex flex-col mb-2">
-          <label
-            htmlFor="name"
-            className={clsx(
-              "block mb-2 text-sm font-medium text-gray-900 required",
-              {
-                "text-red-600": !!errors.phone?.message,
-              }
-            )}
-          >
-            Teléfono
-          </label>
-          <input
-            type="text"
-            {...register("phone", { required: true })}
-            className={clsx("px-5 py-2 border bg-gray-200 rounded w-full", {
-              "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500":
-                !!errors.phone?.message,
-              "bg-green-50 border border-green-500 text-green-900 placeholder-green-700 focus:ring-green-500 focus:border-green-500":
-                isValid,
-            })}
-          />
-          {errors.phone?.message && (
-            <p className="mt-2 text-xs text-red-600 dark:text-red-500">
-              <span className="font-medium">Oops! </span>
-              {errors.phone.message}
-            </p>
-          )}
-        </div>
-
-        <div className="flex flex-col mb-2 sm:mt-1">
-          <div className="inline-flex items-center mb-10">
-            <label
-              className="relative flex cursor-pointer items-center rounded-full p-3"
-              htmlFor="checkbox"
-            >
-              <input
-                type="checkbox"
-                className="border-gray-500 before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-blue-500 hover:before:opacity-10"
-                id="checkbox"
-                {...register("rememberAddress")}
-              />
-              <div className="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-3.5 w-3.5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  stroke="currentColor"
-                  strokeWidth="1"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                    clipRule="evenodd"
-                  ></path>
-                </svg>
-              </div>
-            </label>
-            <span>¿Recordar dirección?</span>
-          </div>
-
-          <button
-            type="submit"
-            className="btn-primary"
-          >
-            Siguiente
-          </button>
-        </div>
-      </form> */}
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto bg-white grid grid-cols-2 gap-x-6 gap-y-4 p-10">
         <div>
           <label
@@ -699,32 +402,12 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
             </p>
           )}
         </div>
-        <div className="flex items-center">
-          <label className="inline-flex items-center cursor-pointer">
-            <input type="checkbox" value="" className="sr-only peer" {...register("rememberAddress")} />
-            <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all peer-checked:bg-blue-600"></div>
-            <span className="ms-3 text-sm font-medium text-gray-900">
-              ¿Recordar dirección?
-            </span>
-          </label>
-        </div>
         <button
           type="submit"
           className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
         >
-          Submit
+          Guardar
         </button>
-        <p>{errors.firstName?.message}</p>
-        <p>{errors.lastName?.message}</p>
-        <p>{errors.address?.message}</p>
-        <p>{errors.address2?.message}</p>
-        <p>{errors.postalCode?.message}</p>
-        <p>{errors.state?.message}</p>
-        <p>{errors.city?.message}</p>
-        <p>{errors.suburb?.message}</p>
-        <p>{errors.country?.message}</p>
-        <p>{errors.phone?.message}</p>
-        <p>{errors.rememberAddress?.message}</p>
       </form>
     </>
   );

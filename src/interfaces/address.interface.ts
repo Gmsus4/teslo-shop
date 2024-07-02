@@ -7,4 +7,6 @@ export interface Address {
     city: string;
     country: string;
     phone: string;
+    state: string;
+    suburb: string;
 }

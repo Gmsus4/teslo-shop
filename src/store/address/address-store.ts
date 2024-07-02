@@ -11,6 +11,8 @@ interface State {
     city: string;
     country: string;
     phone: string;
+    state: string,
+    suburb: string,
   };
 
   //Methods
@@ -29,6 +31,8 @@ export const useAddressStore = create<State>()(
         city: "",
         country: "",
         phone: "",
+        state: "",
+        suburb: "",
       },
 
       setAddress: (address) => {

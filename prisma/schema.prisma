@@ -85,6 +85,7 @@ model User {
 
   //Relaciones
   Order Order[]
+  
 }
 
 model Country {
@@ -103,6 +104,8 @@ model UserAddress {
   postalCode String
   phone      String
   city       String
+  state      String
+  suburb     String
 
   //Relaciones
   country   Country @relation(fields: [countryId], references: [id])
