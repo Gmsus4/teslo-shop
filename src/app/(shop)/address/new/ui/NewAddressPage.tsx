@@ -151,7 +151,7 @@ export const NewAddressPage = ({ countries, userStoreAddress = {} }: Props) => {
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto bg-white grid grid-cols-2 gap-x-6 gap-y-4 p-10">
+      <form onSubmit={handleSubmit(onSubmit)} className="bg-white grid md:grid-cols-2 grid-cols-1 gap-x-6 gap-y-4 p-10 rounded-xl">
         <div>
           <label
             htmlFor="nombres"
@@ -402,12 +402,14 @@ export const NewAddressPage = ({ countries, userStoreAddress = {} }: Props) => {
             </p>
           )}
         </div>
-        <button
-          type="submit"
-          className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-        >
-          Guardar
-        </button>
+        <div className="flex items-end">
+          <button
+            type="submit"
+            className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 h-10 text-center"
+          >
+            Guardar
+          </button>
+        </div>
       </form>
     </>
   );

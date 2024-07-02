@@ -85,6 +85,7 @@ model User {
 
   //Relaciones
   Order Order[]
+  AllUserAddress AllUserAddress[]
   
 }
 
@@ -93,6 +94,27 @@ model Country {
   name         String
   UserAddress  UserAddress[]
   OrderAddress OrderAddress[]
+  AllUserAddress AllUserAddress[]
+}
+
+model AllUserAddress {
+  id         String  @id @default(uuid())
+  firstName  String
+  lastName   String
+  address    String
+  address2   String?
+  postalCode String
+  phone      String
+  city       String
+  state      String
+  suburb     String
+
+  //Relaciones
+  country   Country @relation(fields: [countryId], references: [id])
+  countryId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }
 
 model UserAddress {

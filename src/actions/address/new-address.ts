@@ -19,7 +19,7 @@ export const createNewAddress = async(address: Address, userId: string) => {
             suburb: address.suburb,
         }
 
-        const newAddress = await prisma.userAddress.create({
+        const newAddress = await prisma.allUserAddress.create({
             data: addressToSave
         })
 

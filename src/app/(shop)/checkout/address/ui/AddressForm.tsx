@@ -448,7 +448,7 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
           </button>
         </div>
       </form> */}
-      <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto bg-white grid grid-cols-2 gap-x-6 gap-y-4 p-10">
+      <form onSubmit={handleSubmit(onSubmit)} className="mx-auto bg-white grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 p-10">
         <div>
           <label
             htmlFor="nombres"
@@ -714,17 +714,6 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
         >
           Submit
         </button>
-        <p>{errors.firstName?.message}</p>
-        <p>{errors.lastName?.message}</p>
-        <p>{errors.address?.message}</p>
-        <p>{errors.address2?.message}</p>
-        <p>{errors.postalCode?.message}</p>
-        <p>{errors.state?.message}</p>
-        <p>{errors.city?.message}</p>
-        <p>{errors.suburb?.message}</p>
-        <p>{errors.country?.message}</p>
-        <p>{errors.phone?.message}</p>
-        <p>{errors.rememberAddress?.message}</p>
       </form>
     </>
   );
