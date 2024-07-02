@@ -2,9 +2,9 @@
 
 import prisma from "@/lib/prisma";
 
-export const deleteUserAddress = async (userId: string) => {
+export const deleteUserAddress = async (userId: string, addressId: string) => {
     try {
-        await prisma.userAddress.delete({ where: { userId: userId } });
+        await prisma.allUserAddress.delete({ where: { userId: userId, id: addressId } });
         return {
             ok: true,
             message: 'Se elimino la dirección'

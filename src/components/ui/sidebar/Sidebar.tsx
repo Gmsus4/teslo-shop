@@ -5,6 +5,7 @@ import { useUIStore } from "@/store";
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { FaRegAddressCard } from "react-icons/fa";
 
 import {
   IoCloseOutline,
@@ -92,6 +93,14 @@ export const Sidebar = () => {
               >
                 <IoTicketOutline size={30} />
                 <span className="ml-3 text-xl">Ordenes</span>
+              </Link>
+              <Link
+                href="/address"
+                onClick={closeMenu}
+                className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all "
+              >
+                <FaRegAddressCard size={30} />
+                <span className="ml-3 text-xl">Mis direcciones</span>
               </Link>
             </>
           )

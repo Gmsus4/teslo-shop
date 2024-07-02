@@ -1,6 +1,11 @@
+'use client'
+
+import { createNewAddress, deleteUserAddress, setUserAdress } from "@/actions";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
-import { FaAddressCard, FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle } from "react-icons/fa";
 
 interface Props {
   allAddress: {
@@ -31,10 +36,27 @@ interface Props {
     state: string;
     suburb: string;
     userId: string;
-} | undefined
+} | undefined,
+}
+
+interface AllAddress {
+  id: string; //aqui
+  firstName: string;
+  lastName: string;
+  address: string;
+  address2?: string | undefined | null;
+  postalCode: string;
+  phone: string;
+  city: string;
+  state: string;
+  suburb: string;
+  countryId: string;
+  userId: string; //aqui
 }
 
 export const AddressCard = ({ allAddress, userAddress }: Props) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   if (!userAddress) {
     return (
       <>
@@ -45,6 +67,28 @@ export const AddressCard = ({ allAddress, userAddress }: Props) => {
       </>
     );
   }
+  
+  const setUseAddress = async(address:AllAddress) => {
+    setIsLoading(true);
+    const { id, userId, countryId, ...rest } = address;
+    const setAddress = {
+      ...rest,
+      country: countryId
+    }
+
+    try {
+      await createNewAddress(userAddress, userId); //Crea una nueva dirección exactamente igual que la dirección de usuario por defecto, la del model UserAddress
+      await setUserAdress(setAddress, userId); //Actualiza el UserAddress unique con el address que se le presiono usar
+      await deleteUserAddress(userId, id); //Elimina el address AllUserAddress que ya paso a ser parte del UserAddress
+  
+      // Una vez completadas las tareas, recarga la página
+      router.refresh()
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error al actualizar la dirección:', error);
+    }
+  }
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       <Link href={'/address/new'} className="text-gray-500 font-semibold text-2xl w-full h-60 border-dashed rounded-lg border-4 border-gray-300 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-gray-500 transition-colors duration-300">
@@ -92,12 +136,15 @@ export const AddressCard = ({ allAddress, userAddress }: Props) => {
               <p className="text-sm text-gray-700">
                 Número de teléfono: {address?.phone}
               </p>
+              {/* <p className="text-xs text-gray-700">
+                ID Address: {address?.id}
+              </p> */}
             </div>
             <div className="flex justify-between">
               <button className="text-sm text-blue-600 hover:underline self-start">
                 Editar
               </button>
-              <button className="text-sm text-gray-600 hover:underline self-start">
+              <button onClick={() => setUseAddress(address)} className="text-sm text-gray-600 hover:underline self-start" disabled={isLoading}>
                 Usar
               </button>
             </div>
