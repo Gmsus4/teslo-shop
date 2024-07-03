@@ -31,8 +31,8 @@ export default async function EditAddress({ params }: Props) {
   }
 
   return (
-    <div className="flex flex-col sm:justify-center sm:items-center md:h-[88vh] mb-72 md:mb-0 md:px-10 p-1 sm:px-0">
-      <div className="w-full  xl:w-[1000px] flex flex-col justify-center text-left">
+    <div className="flex flex-col sm:justify-center sm:items-center md:h-[80vh] md:mb-0 md:px-10 p-1 sm:px-0">
+      <div className="w-full flex flex-col justify-center text-left">
         <Title title="Editar dirección" />
         <EditAddressPage countries={countries} address={newAddress!} idAddress={id} message={message}/>
       </div>
