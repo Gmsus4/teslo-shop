@@ -111,9 +111,9 @@ export const AddressCard = ({ allAddress, userAddress }: Props) => {
             </p>
           </div>
           <div className="flex justify-between items-center"> 
-            <button className="text-sm text-blue-600 hover:underline self-start">
+            <Link href={`/address/edit/${userAddress.id}`} className="text-sm text-blue-600 hover:underline self-start">
               Editar
-            </button>
+            </Link>
             <span className="text-sm text-blue-600 flex items-center gap-2">
               Usando actualmente
               <FaCheckCircle />
@@ -141,9 +141,9 @@ export const AddressCard = ({ allAddress, userAddress }: Props) => {
               </p> */}
             </div>
             <div className="flex justify-between">
-              <button className="text-sm text-blue-600 hover:underline self-start">
+              <Link href={`/address/edit/${address.id}`} className="text-sm text-blue-600 hover:underline self-start">
                 Editar
-              </button>
+              </Link>
               <button onClick={() => setUseAddress(address)} className="text-sm text-gray-600 hover:underline self-start" disabled={isLoading}>
                 Usar
               </button>

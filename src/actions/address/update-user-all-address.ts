@@ -1,10 +1,9 @@
 'use server'
 
-import { Address } from "@/interfaces";
+import type { Address } from "@/interfaces";
 import prisma from "@/lib/prisma";
 
-//Crea un nuevo address dentro del model allUserAddress
-export const createNewAddress = async(address: Address, userId: string) => {
+export const updateAllUserAddress = async(address: Address, userId: string, idAddress: string) => {
     try {
         const addressToSave = { //Objeto con los datos a mandar al prisma
             userId: userId,
@@ -20,13 +19,14 @@ export const createNewAddress = async(address: Address, userId: string) => {
             suburb: address.suburb,
         }
 
-        const newAddress = await prisma.allUserAddress.create({
+        const updatedAddress = await prisma.allUserAddress.update({
+            where: { id: idAddress },
             data: addressToSave
-        })
+        }) 
 
-        return newAddress;
+        return updatedAddress;
     } catch (error) {
         console.log(error);
-        throw new Error('No se pudo crear la dirección')
+        throw new Error('No se pudo grabar la dirección')
     }
 }

@@ -92,23 +92,15 @@ export const NewAddressPage = ({ countries, userStoreAddress = {} }: Props) => {
     handleSubmit,
     register,
     formState: { errors, isValid },
-    reset,
-    watch,
     getValues,
     setValue,
   } = useForm<FormInputs>({
-    resolver: yupResolver(addressSchema),
-    defaultValues: {
-      ...(userStoreAddress as any),
-      rememberAddress: true,
-    },
+    resolver: yupResolver(addressSchema)
   });
 
   const { data: session } = useSession({
     required: true, //Si la persona no esta autenticada la va a mandar al login
   });
-
-//   const setAddress = useAddressStore((state) => state.setAddress);
 
   const [colonias, setColonias] = useState([]);
   const [isCheckPostalCode, setIsCheckPostalCode] = useState(false);
@@ -133,19 +125,12 @@ export const NewAddressPage = ({ countries, userStoreAddress = {} }: Props) => {
   }
 
   const onSubmit = async (data: FormInputs) => {
-    //console.log({data});
     const { ...restAddress } = data;
-    console.log(restAddress);
-    createNewAddress(restAddress, session!.user.id);
-    // setAddress(restAddress);
-
-    // if (rememberAddress) {
-    //   await setUserAdress(restAddress, session!.user.id);
-    // } else {
-    //     await deleteUserAddress(session!.user.id);
-    // }
+    if(!userStoreAddress){
+      await setUserAdress(restAddress, session!.user.id);
+    }
     
-    // await crearNuevoAddress(restAddress, session!.user.id); //Todo: Crear nuevo address
+    await createNewAddress(restAddress, session!.user.id);
     router.push("/address");
   };
 

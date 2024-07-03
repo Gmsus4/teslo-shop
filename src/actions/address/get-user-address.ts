@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 
+//Obtiene todos los valores del address del model userAddress
 export const getUserAddress = async(userId: string) => {
     try {
         const address = await prisma.userAddress.findUnique({ 

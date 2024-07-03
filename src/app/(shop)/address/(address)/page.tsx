@@ -13,8 +13,8 @@ export default async function Address() {
   const allAddress = (await getAllUserAddressById(session.user.id)) ?? undefined;
   const userAddress = await getUserAddress(session.user.id) ?? undefined;
   return (
-    <div className="flex flex-col sm:justify-center sm:items-center md:h-[88vh] mb-72 md:mb-0 px-10 sm:px-0">
-      <div className="w-full  xl:w-[1000px] flex flex-col justify-center text-left">
+    <div className="flex flex-col sm:justify-center sm:items-center mb-72 md:mb-0 px-10 sm:px-0">
+      <div className="w-full flex flex-col justify-center text-left">
         <Title title="Mis direcciones" />
         <AddressCard allAddress={allAddress} userAddress={userAddress}/>
       </div>

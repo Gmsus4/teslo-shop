@@ -1,5 +1,6 @@
 'use server'
 
+//Hace una petición a una api para obtener información adicional dependiendo del código postal
 export const getCodigoPostal = async(codigoPostal: string) => {
     const myHeaders = new Headers();
     myHeaders.append("APIKEY", `${process.env.DIPOMEX_APIKEY}`);
