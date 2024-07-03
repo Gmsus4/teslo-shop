@@ -8,6 +8,7 @@ import { getCodigoPostal, setUserAdress, updateAllUserAddress } from "@/actions"
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { FormAddress, addressSchema } from "@/components";
+import { useAddressStore } from "@/store";
 
 interface Props {
   countries: Country[];
@@ -43,6 +44,7 @@ export const EditAddressPage = ({ countries, address = {}, idAddress, message }:
   const [isCheckPostalCode, setIsCheckPostalCode] = useState(false);
   const [isLoadingPostalCode, setIsLoadingPostalCode] = useState(false);
   const [isErrorPostalCode, setIsErrorPostalCode] = useState(false);
+  const setAddress = useAddressStore(state => state.setAddress);
 
   const validatedCodigoPostal = async() => {
     setIsLoadingPostalCode(true);
@@ -72,6 +74,8 @@ export const EditAddressPage = ({ countries, address = {}, idAddress, message }:
     }
 
     await updateAllUserAddress(restAddress, session!.user.id, idAddress);
+
+    setAddress(restAddress);
     router.replace('/address');
     router.refresh();
   };

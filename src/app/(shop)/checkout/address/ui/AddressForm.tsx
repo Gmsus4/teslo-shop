@@ -23,8 +23,7 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
     useForm<FormInputs>({
       resolver: yupResolver(Schema),
       defaultValues: {
-        ...(userStoreAddress as any),
-        rememberAddress: true,
+        ...(userStoreAddress as any)
       },
     });
 
@@ -32,7 +31,7 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
     required: true, //Si la persona no esta autenticada la va a mandar al login
   });
 
-  const setAddress = useAddressStore((state) => state.setAddress);
+  const setAddress = useAddressStore(state => state.setAddress);
   
   const [colonias, setColonias] = useState([]);
   const [isCheckPostalCode, setIsCheckPostalCode] = useState(false);
@@ -58,9 +57,22 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
     setIsErrorPostalCode(false);
   };
   const onSubmit = async (data: FormInputs) => {
-    const { ...restAddress } = data;
-    setAddress(restAddress);
+    const restAddress = data;
+    setAddress({
+      firstName: data.firstName,
+      lastName: data.lastName,
+      address: data.address,
+      address2: data.address2,
+      postalCode: data.postalCode,
+      city: data.city,
+      country: data.country,
+      phone: data.phone,
+      state: data.state,
+      suburb: data.suburb,
+    });
+    
     await setUserAdress(restAddress, session!.user.id);
+
     router.push("/checkout");
   };
 

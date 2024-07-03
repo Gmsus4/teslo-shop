@@ -46,6 +46,7 @@ export const PlaceOrder = () => {
       const resp = await placeOrder(productsToOrder, address)
       if ( !resp.ok ){
         setIsPlacingOrder(false);
+        alert('Por aquí está el error')
         setErrorMessage(resp.message);
         notifyError();
         return;
