@@ -36,6 +36,7 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
   const [colonias, setColonias] = useState([]);
   const [isCheckPostalCode, setIsCheckPostalCode] = useState(false);
   const [isLoadingPostalCode, setIsLoadingPostalCode] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isErrorPostalCode, setIsErrorPostalCode] = useState(false);
 
   const validatedCodigoPostal = async () => {
@@ -57,6 +58,7 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
     setIsErrorPostalCode(false);
   };
   const onSubmit = async (data: FormInputs) => {
+    setIsLoading(true)
     const restAddress = data;
     setAddress({
       firstName: data.firstName,
@@ -74,6 +76,7 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
     await setUserAdress(restAddress, session!.user.id);
 
     router.push("/checkout");
+    setIsLoading(false)
   };
 
   return (
@@ -86,12 +89,15 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
         isLoadingPostalCode={isLoadingPostalCode}
         isErrorPostalCode={isErrorPostalCode}
         isCheckPostalCode={isCheckPostalCode}
+        isLoading={isLoading}
         userStoreAddress={userStoreAddress}
         colonias={colonias}
         countries={countries}
         btnTitle={"Confirmar dirección"}
         isAddressCheckout={true}
         iconBtn={true}
+        btnNameLoading="Guardando"
+        isAddressUnique={true}
       />
     </>
   );

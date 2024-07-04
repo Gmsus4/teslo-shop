@@ -12,6 +12,7 @@ export default async function NewAddress() {
   }
 
   const userAddress = (await getUserAddress(session.user.id)) ?? undefined;
+  console.log(userAddress);
   return (
     <div className="flex flex-col sm:justify-center sm:items-center md:h-[80vh] md:mb-0 md:px-10 p-1 sm:px-0">
       <div className="w-full flex flex-col justify-center text-left">
