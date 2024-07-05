@@ -61,11 +61,23 @@ export const NewAddressPage = ({ countries, userStoreAddress = {} }: Props) => {
       await setUserAdress(restAddress, session!.user.id);
       router.refresh()
       router.push("/address");
+      await new Promise((resolve) => setTimeout(resolve, 500)); 
+      MySwal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Dirección creada',
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+      });
       return;
     }
     
     await createNewAddress(restAddress, session!.user.id);
     setAddress(restAddress);
+    router.push("/address");
+    router.refresh()
+    await new Promise((resolve) => setTimeout(resolve, 500)); 
     MySwal.fire({
       position: 'top-end',
       icon: 'success',
@@ -75,8 +87,6 @@ export const NewAddressPage = ({ countries, userStoreAddress = {} }: Props) => {
       timer: 3000,
     });
     
-    router.push("/address");
-    router.refresh()
     setIsLoading(false)
   };
 

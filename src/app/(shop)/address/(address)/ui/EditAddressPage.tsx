@@ -82,12 +82,25 @@ export const EditAddressPage = ({
     const { ...restAddress } = data;
     if (message === "Default") {
       await setUserAdress(restAddress, session!.user.id);
-      router.replace("/address");
-      router.refresh();
+        router.replace("/address"),
+        router.refresh()
+      await new Promise((resolve) => setTimeout(resolve, 500)); 
+
+      MySwal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Dirección editada",
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+      });
       return;
     }
     setAddress(restAddress);
     await updateAllUserAddress(restAddress, session!.user.id, idAddress);
+    router.replace("/address");
+    router.refresh();
+    await new Promise((resolve) => setTimeout(resolve, 500)); 
     MySwal.fire({
       position: "top-end",
       icon: "success",
@@ -96,8 +109,6 @@ export const EditAddressPage = ({
       showConfirmButton: false,
       timer: 3000,
     });
-    router.replace("/address");
-    router.refresh();
     setIsLoading(false);
   };
 
