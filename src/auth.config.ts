@@ -29,7 +29,7 @@ export const authConfig: NextAuthConfig = {
   },
 
   callbacks: {
-    async signIn({ account, profile }) {
+    async signIn({ account, profile, user }): Promise<boolean> {
       // console.log(profile);
       if (account?.provider === "google") {
         // Asegúrate de que los datos necesarios estén disponibles
@@ -37,9 +37,9 @@ export const authConfig: NextAuthConfig = {
           throw new Error("No profile");
         }
 
-        await prisma.user.upsert({
+       const userDB = await prisma.user.upsert({
           where: {
-            email: profile.email,
+            email: profile.email.toLowerCase(),
           },
           create: {
             name: profile.name,
@@ -47,22 +47,22 @@ export const authConfig: NextAuthConfig = {
             role: 'user',
             password: 'SIGNINGOOGLE',
             image: profile.picture,
+            
           },
           select:{
             email: true,
             name: true,
             image: true,
             id: true,
+            role: true
           },
           update: {
             email: profile.email,
-             id: profile.id!
           },
         });
 
-        const user = prisma.user.findUnique({ where: {email: profile.email }})
-
-        // session.user.id = 'Hola mundo';
+        user.id = userDB.id
+        user.role = userDB.role
       }
       return true;
     },
@@ -87,11 +87,8 @@ export const authConfig: NextAuthConfig = {
       return token;
     },
 
-    session({ session, token, user }) {
-      console.log({session, token, user})
-      // session.user = 
+    async session({ session, token, user }) {
       session.user = token.data as any;
-      // session.user.id = 'minecraft'
       return session;
     },
   },

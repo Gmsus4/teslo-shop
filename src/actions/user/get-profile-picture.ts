@@ -2,20 +2,21 @@
 
 import prisma from "@/lib/prisma";
 
-export const getProfilePicture = async( userId: string ) => {
+export const getUserDB = async( userId: string ) => {
     try {
-        const imageProfile = await prisma.user.findFirst({ //Encuentra el primer producto
+        const userProfile = await prisma.user.findFirst({ //Encuentra el primer producto
             where: { 
                 id: userId
             }
         })
 
-        if( !imageProfile ) return null; //Si no tenemos la imagen
+        if( !userProfile ) return null; //Si no tenemos la imagen
 
-        const { image, ...rest } = imageProfile;
+        // const { image, ...rest } = imageProfile;
 
         return {
-            image: image
+            // image: image
+            data: userProfile
         };
     } catch (error) {
         console.log(error);

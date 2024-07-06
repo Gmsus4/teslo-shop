@@ -12,14 +12,22 @@ import clsx from "clsx";
 
 interface Props {
   session: Session;
-  imageUrl: string | null | undefined
+  userData: {
+    id: string;
+    name: string | null;
+    email: string;
+    emailVerified: Date | null;
+    password: string;
+    role: Role;
+    image: string | null;
+} | undefined
 }
 
 interface Inputs {
   image: FileList;
 }
 
-export const ProfileCart = ({ session, imageUrl }: Props) => {
+export const ProfileCart = ({ session, userData }: Props) => {
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,13 +49,14 @@ export const ProfileCart = ({ session, imageUrl }: Props) => {
 
   const onSubmit = async (data: Inputs) => {
     setIsLoading(true);
-    await deleteProfileUserImage(imageUrl ?? '');
+    await deleteProfileUserImage(userData?.image ?? '');
     const formData = new FormData();
     const { image } = data;
     // const urlImg = image[0].name;
     
     formData.append("image", image[0]);
-    const { ok } = await uploadImageUser(formData, session.user.id);
+    // const { ok } = await uploadImageUser(formData, session.user.id);
+    const { ok } = await uploadImageUser(formData, userData!.id);
 
     if (!ok) {
       alert("Foto de perfil no se pudo actualizar");
@@ -93,10 +102,9 @@ export const ProfileCart = ({ session, imageUrl }: Props) => {
                   width={300}
                   className="w-24 h-24 rounded-full shadow-lg"
                   src={
-                    session.user.image 
-                      ? session.user.image 
-                        : imageUrl ??
-                       "https://res.cloudinary.com/dozzu7xhx/image/upload/v1719806561/perfil/p8osbgzrxslbx2bygvft.png"
+                    userData!.image 
+                      ? userData!.image 
+                        : "https://res.cloudinary.com/dozzu7xhx/image/upload/v1719806561/perfil/p8osbgzrxslbx2bygvft.png"
                   }
                   alt="Bonnie image"
                 />
@@ -114,13 +122,19 @@ export const ProfileCart = ({ session, imageUrl }: Props) => {
               </>
             )}
           </div>
-          <h5 className="mb-1 text-xl font-medium text-gray-900">
-            {session.user.name}
-          </h5>
-          <p>
-            {session.user.id}
-          </p>
-          <span className="text-sm text-gray-500">{session.user.role}</span>
+          <div className="flex flex-col-reverse gap-4">
+            <div className="flex items-center flex-col">
+              <h5 className="mb-1 text-xl font-medium text-gray-900">
+                {/* {session.user.name} */}
+                {userData?.name}
+              </h5>
+              <p className="text-start text-gray-500 text-sm">
+                {/* {session.user.email} */}
+                {userData?.email}
+              </p>
+            </div>
+            <span className="text-sm text-gray-500 text-center">{userData?.role === 'admin' ? 'Administrador' : 'Usuario'}</span>
+          </div>
           <div className="flex mt-4 md:mt-6">
             <button
               type="submit"

@@ -40,7 +40,7 @@ export default async function OrdersPage({ searchParams }: Props) {
                     <div className="flex-shrink-0">
                       <ProductImage
                         className="rounded-full object-fill w-16 h-16"
-                        alt={order.user.name}
+                        alt={order.user.name!}
                         src={order.user.image!}
                         width={400}
                         height={400}

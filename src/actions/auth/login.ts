@@ -31,16 +31,16 @@ export const login = async(email: string, password: string) => {
   }
 }
 
-export const loginGoole = async() => {
-  try {
-    await signIn('google');
+// export const loginGoole = async() => {
+//   try {
+//     await signIn('google');
 
-    return { ok: true }
-  } catch (error) {
-    console.log(error)
-    return {
-      ok: false,
-      message: 'No se pudo iniciar sesión'
-    }
-  }
-}
+//     return { ok: true }
+//   } catch (error) {
+//     console.log(error)
+//     return {
+//       ok: false,
+//       message: 'No se pudo iniciar sesión'
+//     }
+//   }
+// }

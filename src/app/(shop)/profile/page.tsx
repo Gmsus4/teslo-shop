@@ -2,7 +2,7 @@ import { auth } from "@/auth.config";
 import { Title } from "@/components";
 import { redirect } from "next/navigation";
 import { ProfileCart } from "./ui/ProfileCart";
-import { getProfilePicture } from "@/actions";
+import { getUserDB } from "@/actions";
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -11,9 +11,9 @@ export default async function ProfilePage() {
     redirect("/");
   }
 
-  console.log({session});
+  // console.log(session)
 
-  const resp = await getProfilePicture(session.user.id) ?? undefined;
+  const resp = await getUserDB(session.user.id) ?? undefined;
   return (
     <div className="p-5 md:w-80 w-full items-center flex flex-col">
       {/* <Title title="Perfil" />
@@ -22,7 +22,7 @@ export default async function ProfilePage() {
       </pre>
       <h3 className="text-3xl mt-5">{session.user.role}</h3> */}
 
-      <ProfileCart session={session} imageUrl={resp?.image}/>
+      <ProfileCart session={session} userData={resp?.data}/>
     </div>
   );
 }
