@@ -4,6 +4,8 @@ import { z } from "zod";
 import prisma from "./lib/prisma";
 import bcryptjs from "bcryptjs";
 import Google from "next-auth/providers/google";
+import DiscordProvider from "next-auth/providers/discord";
+import { saveUserAuthProvider } from "./actions";
 
 const authenticatedRoutes = [
   //"/cart",
@@ -30,35 +32,42 @@ export const authConfig: NextAuthConfig = {
 
   callbacks: {
     async signIn({ account, profile, user }): Promise<boolean> {
-      // console.log(profile);
       if (account?.provider === "google") {
-        // Asegúrate de que los datos necesarios estén disponibles
         if (!profile?.email) {
           throw new Error("No profile");
         }
 
        const userDB = await prisma.user.upsert({
-          where: {
-            email: profile.email.toLowerCase(),
-          },
+          where: { email: profile.email.toLowerCase() },
           create: {
             name: profile.name,
             email: profile.email,
             role: 'user',
             password: 'SIGNINGOOGLE',
             image: profile.picture,
-            
           },
-          select:{
-            email: true,
-            name: true,
-            image: true,
-            id: true,
-            role: true
-          },
-          update: {
+          update: { email: profile.email },
+        });
+
+        user.id = userDB.id
+        user.role = userDB.role
+      }
+
+      if (account?.provider === "discord") {
+        if (!profile?.email) {
+          throw new Error("No profile");
+        }
+
+       const userDB = await prisma.user.upsert({
+          where: { email: profile.email.toLowerCase() },
+          create: {
+            name: profile.username as any,
             email: profile.email,
+            role: 'user',
+            password: 'SIGNINGOOGLE',
+            image: profile.image_url as any,
           },
+          update: { email: profile.email },
         });
 
         user.id = userDB.id
@@ -123,6 +132,10 @@ export const authConfig: NextAuthConfig = {
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
+    DiscordProvider({
+      clientId: process.env.DISCORD_CLIENT_ID,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET
+    })
   ],
 };
 
