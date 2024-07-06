@@ -11,7 +11,9 @@ export default async function ProfilePage() {
     redirect("/");
   }
 
-  const image = await getProfilePicture(session.user.id) ?? undefined;
+  console.log({session});
+
+  const resp = await getProfilePicture(session.user.id) ?? undefined;
   return (
     <div className="p-5 md:w-80 w-full items-center flex flex-col">
       {/* <Title title="Perfil" />
@@ -20,7 +22,7 @@ export default async function ProfilePage() {
       </pre>
       <h3 className="text-3xl mt-5">{session.user.role}</h3> */}
 
-      <ProfileCart session={session} imageUrl={image}/>
+      <ProfileCart session={session} imageUrl={resp?.image}/>
     </div>
   );
 }

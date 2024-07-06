@@ -2,10 +2,7 @@
 
 import { signIn } from '@/auth.config';
  
-export async function authenticate(
-  prevState: string | undefined,
-  formData: FormData,
-) {
+export async function authenticate( prevState: string | undefined, formData: FormData) {
   try {
     // console.log({ formData: Object.fromEntries(formData)})
     await signIn('credentials', {
@@ -23,6 +20,20 @@ export async function authenticate(
 export const login = async(email: string, password: string) => {
   try {
     await signIn('credentials', {email, password});
+
+    return { ok: true }
+  } catch (error) {
+    console.log(error)
+    return {
+      ok: false,
+      message: 'No se pudo iniciar sesión'
+    }
+  }
+}
+
+export const loginGoole = async() => {
+  try {
+    await signIn('google');
 
     return { ok: true }
   } catch (error) {

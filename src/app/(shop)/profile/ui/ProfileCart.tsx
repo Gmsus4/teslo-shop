@@ -12,17 +12,7 @@ import clsx from "clsx";
 
 interface Props {
   session: Session;
-  imageUrl:
-    | {
-        image: string | null;
-        id?: string;
-        name?: string;
-        email?: string;
-        emailVerified?: Date | null;
-        password?: string;
-        role?: Role;
-      }
-    | undefined;
+  imageUrl: string | null | undefined
 }
 
 interface Inputs {
@@ -51,7 +41,7 @@ export const ProfileCart = ({ session, imageUrl }: Props) => {
 
   const onSubmit = async (data: Inputs) => {
     setIsLoading(true);
-    await deleteProfileUserImage(imageUrl?.image ?? '');
+    await deleteProfileUserImage(imageUrl ?? '');
     const formData = new FormData();
     const { image } = data;
     // const urlImg = image[0].name;
@@ -103,9 +93,10 @@ export const ProfileCart = ({ session, imageUrl }: Props) => {
                   width={300}
                   className="w-24 h-24 rounded-full shadow-lg"
                   src={
-                    imageUrl?.image
-                      ? imageUrl.image
-                      : "https://res.cloudinary.com/dozzu7xhx/image/upload/v1719806561/perfil/p8osbgzrxslbx2bygvft.png"
+                    session.user.image 
+                      ? session.user.image 
+                        : imageUrl ??
+                       "https://res.cloudinary.com/dozzu7xhx/image/upload/v1719806561/perfil/p8osbgzrxslbx2bygvft.png"
                   }
                   alt="Bonnie image"
                 />
@@ -126,6 +117,9 @@ export const ProfileCart = ({ session, imageUrl }: Props) => {
           <h5 className="mb-1 text-xl font-medium text-gray-900">
             {session.user.name}
           </h5>
+          <p>
+            {session.user.id}
+          </p>
           <span className="text-sm text-gray-500">{session.user.role}</span>
           <div className="flex mt-4 md:mt-6">
             <button

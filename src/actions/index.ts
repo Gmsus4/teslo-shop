@@ -1,7 +1,7 @@
 export { getProductBySlug } from './product/get-product-by-slug'
 export { getPaginatedProductWithImages } from './product/product-pagination'
 export { getStockBySlug } from './product/get-stock-by-slug'
-export { login, authenticate } from './auth/login'
+export { login, authenticate} from './auth/login'
 export { logout } from './auth/logout'
 export { registerUser } from './auth/register'
 export { getCountries } from './country/get-countries'

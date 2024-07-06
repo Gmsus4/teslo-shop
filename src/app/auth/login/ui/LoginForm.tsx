@@ -2,6 +2,7 @@
 
 import { authenticate } from "@/actions";
 import clsx from "clsx";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 // import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -9,6 +10,7 @@ import { useFormState, useFormStatus } from "react-dom";
 
 export const LoginForm = () => {
   const [state, dispatch] = useFormState(authenticate, undefined);
+
   // const router =useRouter();
   useEffect(() => {
     if(state === 'Success'){
@@ -46,6 +48,15 @@ export const LoginForm = () => {
         <div className="px-2 text-gray-800">O</div>
         <div className="flex-1 border-t border-gray-500"></div>
       </div>
+
+      <button 
+        type="button" 
+        className="btn-secondary text-center mb-4"
+        onClick={() => signIn('google')} 
+        // onClick={() => signIn('google')}
+      >
+        Ingresar con Google
+      </button>
 
       <Link href="/auth/new-account" className="btn-secondary text-center">
         Crear una nueva cuenta

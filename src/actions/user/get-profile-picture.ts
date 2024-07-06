@@ -15,12 +15,10 @@ export const getProfilePicture = async( userId: string ) => {
         const { image, ...rest } = imageProfile;
 
         return {
-            ...rest,
             image: image
         };
     } catch (error) {
         console.log(error);
         throw new Error('Error al obtener producto por slug');
-        
     }
 }

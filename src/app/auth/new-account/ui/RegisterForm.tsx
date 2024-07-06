@@ -47,7 +47,7 @@ export const RegisterForm = () => {
     const { name, email, password } = data;
     
     //Server action
-    const resp = await registerUser(name, email, password);
+    const resp = await registerUser(name, email, password); //Lo guarda en la base de datos de prisma
     if(!resp.ok){
       setErrorMessage( resp.message );
       return;
