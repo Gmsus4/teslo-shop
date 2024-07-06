@@ -4,7 +4,6 @@ import { Title } from "@/components";
 import { ProductsInCart } from "./ui/ProductsInCart";
 import { OrderSummary } from "./ui/OrderSummary";
 import { IoCartOutline } from "react-icons/io5";
-import { SkeletonOrderSummary } from "@/components/ui/skeleton/cart/SkeletonOrderSummary";
 
 export default function CartPage() {
   return (

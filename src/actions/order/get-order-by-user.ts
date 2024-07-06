@@ -17,36 +17,42 @@ export const getOrdersByUser = async({page = 1, take = 12}:PaginationOptions) =>
             message: 'Debe de estar autenticado'
         }
     }
-
-    const orders = await prisma.order.findMany({
-        where: {
-            userId: session.user.id
-        },
-
-        take: take,
-        skip: (page - 1) * take,
-
-        include: {
-            OrderAddress: {
-                select: {
-                    firstName: true,
-                    lastName: true
-                }
+    try {
+        const orders = await prisma.order.findMany({
+            where: {
+                userId: session.user.id
             },
-            user: true
-        }
-    });
+    
+            take: take,
+            skip: (page - 1) * take,
+    
+            include: {
+                OrderAddress: {
+                    select: {
+                        firstName: true,
+                        lastName: true
+                    }
+                },
+                user: true
+            }
+        });
 
-    //Obtener el total de paginas
-    const totalCount = await prisma.order.count({ //Total de ordenes de un usuario especifico
-        where: {
-            userId: session.user.id
+        //Obtener el total de paginas
+        const totalCount = await prisma.order.count({ //Total de ordenes de un usuario especifico
+            where: {
+                userId: session.user.id
+            }
+        }); 
+        const totalPages = Math.ceil(totalCount / take);
+
+        return { 
+            ok: true,
+            orders: orders,
+            totalPages: totalPages
         }
-    }); 
-    const totalPages = Math.ceil(totalCount / take);
-    return { 
-        ok: true,
-        orders: orders,
-        totalPages: totalPages
+    } catch (error) {
+        return { 
+            ok: false,
+        }
     }
 }

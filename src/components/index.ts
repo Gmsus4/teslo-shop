@@ -11,6 +11,7 @@ export * from './providers/Providers'
 export * from './paypal/PaypalButton'
 
 export * from './orders/OrderStatus'
+export * from './orders/OrdersNotFound'
 
 export * from './ui/footer/Footer'
 export * from './ui/not-found/PageNotFound'

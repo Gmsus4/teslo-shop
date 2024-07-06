@@ -3,6 +3,9 @@
 import { ChangeUserRole } from "@/actions";
 import { ProductImage } from "@/components";
 import type { User } from "@/interfaces";
+import clsx from "clsx";
+import { FaStar } from "react-icons/fa";
+import { RiVipCrown2Fill } from "react-icons/ri";
 
 interface Props {
   users: User[];
@@ -16,7 +19,15 @@ export const UsersTable = ({ users }: Props) => {
           {users.map((user) => (
             <li key={user.id} className="py-3 sm:py-4">
               <div className="flex items-center">
-                <div className="flex-shrink-0">
+                <div className="flex-shrink-0 relative">
+                  {
+                    user.role === 'admin' && (
+                      <div className="absolute top-[-5px] right-[-5px]">
+                        <RiVipCrown2Fill size={20} className="text-yellow-400"/>
+                        {/* <FaStar size={20} className="text-yellow-400"/> */}
+                      </div>
+                    )
+                  }
                   <ProductImage 
                     className="rounded-full object-fill w-12 h-12"
                     alt={user.name}
@@ -26,7 +37,14 @@ export const UsersTable = ({ users }: Props) => {
                   />
                 </div>
                 <div className="flex-1 min-w-0 ms-4">
-                  <p className="text-sm font-medium text-gray-900 truncate">
+                  <p className={
+                    clsx(
+                      "text-sm font-medium text-gray-900 truncate",
+                      {
+                        'bg-gradient-to-r from-pink-600 via-purple-500 to-indigo-400 inline-block text-transparent bg-clip-text font-bold': user.role === 'admin'
+                      }
+                    )
+                  }>
                     { user.name }
                   </p>
                   <p className="text-sm text-gray-500 truncate">
