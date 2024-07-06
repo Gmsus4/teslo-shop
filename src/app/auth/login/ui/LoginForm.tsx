@@ -7,7 +7,7 @@ import Link from "next/link";
 // import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
-import { FaDiscord } from "react-icons/fa";
+import { FaDiscord, FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
 export const LoginForm = () => {
@@ -68,6 +68,15 @@ export const LoginForm = () => {
         >
           <FaDiscord size={30} className=""/>
           Conectar con Discord
+        </button>
+
+        <button 
+          className="w-full text-white font-bold bg-[#161616] flex items-center justify-center gap-2 rounded-lg px-6 py-2 text-sm hover:bg-[#141414] transition-colors duration-300"
+          type="button"
+          onClick={() => signIn('github')} 
+        >
+          <FaGithub size={30} className=""/>
+          Conectar con GitHub
         </button>
       </div>
 

@@ -11,7 +11,7 @@ export default async function ProfilePage() {
     redirect("/");
   }
 
-  // console.log(session)
+  console.log(session)
 
   const resp = await getUserDB(session.user.id) ?? undefined;
   return (

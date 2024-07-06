@@ -5,7 +5,7 @@ import prisma from "./lib/prisma";
 import bcryptjs from "bcryptjs";
 import Google from "next-auth/providers/google";
 import DiscordProvider from "next-auth/providers/discord";
-import { saveUserAuthProvider } from "./actions";
+import GitHubProvider from "next-auth/providers/github";
 
 const authenticatedRoutes = [
   //"/cart",
@@ -32,6 +32,7 @@ export const authConfig: NextAuthConfig = {
 
   callbacks: {
     async signIn({ account, profile, user }): Promise<boolean> {
+      console.log(account?.provider)
       if (account?.provider === "google") {
         if (!profile?.email) {
           throw new Error("No profile");
@@ -54,6 +55,27 @@ export const authConfig: NextAuthConfig = {
       }
 
       if (account?.provider === "discord") {
+        if (!profile?.email) {
+          throw new Error("No profile");
+        }
+
+       const userDB = await prisma.user.upsert({
+          where: { email: profile.email.toLowerCase() },
+          create: {
+            name: profile.username as any,
+            email: profile.email,
+            role: 'user',
+            password: 'SIGNINGOOGLE',
+            image: profile.image_url as any,
+          },
+          update: { email: profile.email },
+        });
+
+        user.id = userDB.id
+        user.role = userDB.role
+      }
+
+      if (account?.provider === "github") {
         if (!profile?.email) {
           throw new Error("No profile");
         }
@@ -135,6 +157,10 @@ export const authConfig: NextAuthConfig = {
     DiscordProvider({
       clientId: process.env.DISCORD_CLIENT_ID,
       clientSecret: process.env.DISCORD_CLIENT_SECRET
+    }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID,
+      clientSecret: process.env.GITHUB_SECRET,
     })
   ],
 };
