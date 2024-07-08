@@ -379,9 +379,17 @@ export const ProductForm = ({ product, categories, isEditProduct }: Props) => {
       </div>
 
       {!isLoading ? (
-        <div className="flex gap-4">
+        <div className="flex flex-col md:flex-row gap-4">
           <button
-            className="btn-primary w-8/12 rounded flex items-center justify-center gap-2"
+            className={
+              clsx(
+                "btn-primary rounded flex items-center justify-center gap-2",
+                {
+                  'w-full': !isEditProduct,
+                  'md:w-8/12': isEditProduct
+                }
+              )
+            }
             type="submit"
             disabled={isLoadingDelete}
           >
@@ -391,14 +399,39 @@ export const ProductForm = ({ product, categories, isEditProduct }: Props) => {
           {
             isEditProduct && (
               <>
-                <Link href={`/product/${product.slug}`} className="flex items-center justify-center gap-2 btn-primary w-4/12 rounded" type="button">
+              <div className="flex justify-between gap-2">
+                <Link 
+                  href={`/product/${product.slug}`} 
+                  className={
+                    clsx(
+                      "flex items-center justify-center gap-2 btn-primary rounded",
+                      {
+                        'w-full md:w-4/12': !isEditProduct,
+                        'w-full': isEditProduct
+                      }
+                    )
+                  } 
+                  type="button">
                   <BsBoxSeamFill />
-                  Ver producto
+                  Producto
                 </Link>
-                <button disabled={isLoadingDelete} className="flex items-center justify-center gap-2 btn-danger w-4/12 rounded" type="button" onClick={deleteProductAdmin}>
+                <button 
+                  disabled={isLoadingDelete} 
+                  className={
+                    clsx(
+                      "flex items-center justify-center gap-2 btn-danger rounded",
+                      {
+                        'md:w-4/12 w-full': !isEditProduct,
+                        'w-full': isEditProduct
+                      }
+                    )
+                  } 
+                  type="button" 
+                  onClick={deleteProductAdmin}>
                   <MdDelete />
                   Eliminar
                 </button>
+              </div>
               </>
             )
           }

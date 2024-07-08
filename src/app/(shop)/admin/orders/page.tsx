@@ -28,25 +28,30 @@ export default async function OrdersPage({ searchParams }: Props) {
 
   return (
     <>
-      <Title title="Todas las órdenes" />
+      <Title title="Todas las órdenes"  className="text-center"/>
 
       {
         orders[0] ? (
-          <div className="w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
+          <div className="w-full px-4 py-0 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
           <div className="flow-root">
             <ul role="list" className="divide-y divide-gray-200">
               {orders.map((order) => (
                 <li key={order.id} className="py-3 sm:py-4">
                   <div className="flex items-center gap-6 md:gap-20 justify-between md:flex-row flex-row">
                     <div className="flex">
-                      <div className="flex-shrink-0">
+                      <div className="flex-shrink-0 relative">
                         <ProductImage
-                          className="rounded-full object-fill w-16 h-16"
+                          className="rounded-full object-fill w-20 h-20"
                           alt={order.user.name!}
                           src={order.user.image!}
                           width={400}
                           height={400}
                         />
+                          <div className="flex items-center justify-center gap-1 bg-white absolute bottom-0 font-bold w-full">
+                            <span className="text-xs text-indigo-500">
+                              {getTimeDate(`${order.createdAt}`).arr[0].replace('Hace ', '')}
+                            </span>
+                          </div>
                       </div>
   
                       <div className="flex-1 min-w-0 ms-4">
@@ -54,12 +59,6 @@ export default async function OrdersPage({ searchParams }: Props) {
                           <p className="text-sm font-medium text-gray-900 truncate">
                             {order.user.name}
                           </p>
-                          <div className="flex items-center gap-1">
-                            <span className="flex w-2 h-2 bg-indigo-500 rounded-full"></span>
-                            <span className="text-xs text-indigo-500">
-                              {getTimeDate(`${order.createdAt}`).arr}
-                            </span>
-                          </div>
                         </div>
   
                         <p className="text-sm text-gray-500 truncate">

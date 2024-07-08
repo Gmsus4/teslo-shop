@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { FormAddress, addressSchema } from "@/components";
 import { useAddressStore } from "@/store";
 import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
+import withReactContent from 'sweetalert2-react-content';
 
 interface Props {
   countries: Country[];
@@ -113,6 +113,10 @@ export const EditAddressPage = ({
   };
 
   const deleteAddress = async () => {
+    setIsLoadingDelete(true);
+    // await deleteUserAddress(session!.user.id, idAddress);
+    // router.replace("/address");
+    // router.refresh();
     const result = await MySwal.fire({
       title: "¿Estás seguro?",
       text: "¡No podrás revertir esto!",

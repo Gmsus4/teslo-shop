@@ -2,13 +2,20 @@
 
 import { ChangeUserRole } from "@/actions";
 import { ProductImage } from "@/components";
-import type { User } from "@/interfaces";
+import { Role } from "@prisma/client";
 import clsx from "clsx";
-import { FaStar } from "react-icons/fa";
 import { RiVipCrown2Fill } from "react-icons/ri";
 
 interface Props {
-  users: User[];
+  users: {
+    id: string;
+    name: string | null;
+    email: string;
+    emailVerified: Date | null;
+    password: string;
+    role: Role;
+    image: string | null;
+}[]
 }
 
 export const UsersTable = ({ users }: Props) => {
@@ -30,7 +37,7 @@ export const UsersTable = ({ users }: Props) => {
                   }
                   <ProductImage 
                     className="rounded-full object-fill w-12 h-12"
-                    alt={user.name}
+                    alt={user.name!}
                     src={user.image!}
                     width={400}
                     height={400}
@@ -53,7 +60,7 @@ export const UsersTable = ({ users }: Props) => {
                 </div>
                 <div className="inline-flex items-center text-base font-semibold text-gray-900">
                   <select
-                    className="text-sm text-gray-900 w-full p-2 cursor-pointer"
+                    className="text-sm text-gray-900 w-full py-2 px-4 cursor-pointer border-none bg-slate-100 rounded-lg"
                     value={user.role}
                     onChange={(e) =>
                       ChangeUserRole(

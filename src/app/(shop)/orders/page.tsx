@@ -32,7 +32,7 @@ export default async function OrdersPage({ searchParams }: Props) {
       <Title title="Mis órdenes" className="text-center"/>
       {
         orders[0] ? (
-          <div className="w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
+          <div className="w-full px-4 py-0 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
             <div className="flow-root">
               <ul role="list" className="divide-y divide-gray-200">
                 {orders.map((order) => (
