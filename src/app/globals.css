@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @import url('loadingHamster.css');
 @import url('loadingCart.css');
 @import url('addToCart.css');

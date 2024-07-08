@@ -1,29 +1,35 @@
-export const revalidate = 0;
-
-import { getPaginatedProductWithImages } from '@/actions';
-import { Title } from '@/components';
-import { FilterProducts } from '../product/[slug]/ui/Filter';
+import { Pagination, ProductImage } from "@/components"
+import { Size } from "@/interfaces";
+import { currencyFormat } from "@/utils"
+import { Gender } from "@prisma/client";
+import Link from "next/link"
 
 interface Props {
-  searchParams: {
-    page?: string;
-  }
+    products: ({
+        ProductImage: {
+            id: number;
+            url: string;
+            productId: string;
+        }[];
+    } & {
+        id: string;
+        title: string;
+        description: string;
+        inStock: number;
+        price: number;
+        sizes: Size[];
+        slug: string;
+        tags: string[];
+        gender: Gender;
+        categoryId: string;
+    })[]
+    totalPages: number
 }
 
-const categories = ['Hats', 'Hoodies','Pants', 'Shirts'];
-const genders = ['Men', 'Women', 'Kid', 'Unisex'];
-const tallas = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-const precios = ['$0 - $25', '$25 - $50', '$50 - $75', '$75+'];
-
-export default async function OrdersPage({searchParams}:Props) {
-  const page = searchParams.page ? parseInt( searchParams.page ) : 1; 
-  const { products, currentPage, totalPages } = await getPaginatedProductWithImages({ page });
-
+export const TableProducts = ({totalPages, products}:Props) => {
   return (
     <>
-      <Title title="Mantenimiento de productos"/>
-      <FilterProducts categories={categories} genders={genders} precios={precios} tallas={tallas} initialTotalPages={totalPages} allProducts={products}/>
-      {/* <div className='flex justify-end mb-5'>
+          <div className='flex justify-end mb-5'>
         <Link href="/admin/product/new" className='btn-primary'>
           Nuevo producto
         </Link> 
@@ -59,9 +65,9 @@ export default async function OrdersPage({searchParams}:Props) {
                 <tr key={product.id} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
 
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    <Link href={`/product/${product.slug}`}>
-                      <ProductImage 
-                        src={product.ProductImage[0]?.url}
+                    <Link href={`/product/${product.slug}`}>    
+                      <ProductImage
+                        src={product.ProductImage[0]?.url ?? 'https://res.cloudinary.com/dozzu7xhx/image/upload/v1720374544/teslo-shop/tools/wil2eqzpwgsnuaa2dvvf.png'}
                         width={80}
                         height={80}
                         alt={product.title}
@@ -95,7 +101,7 @@ export default async function OrdersPage({searchParams}:Props) {
           </tbody>
         </table>
         <Pagination totalPages={totalPages} />
-      </div> */}
+      </div>
     </>
-  );
+  )
 }

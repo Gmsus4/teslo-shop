@@ -22,7 +22,7 @@ export const deleteProductImage = async(imageId: number, imageUrl: string) => {
 
     try {
         // await cloudinary.uploader.destroy(imageName);
-        await cloudinary.uploader.destroy(`teslo-shop/${ imageName }`)
+        await cloudinary.uploader.destroy(`teslo-shop/products/${ imageName }`)
         const deleteImage = await prisma.productImage.delete({
             where: {
                 id: imageId

@@ -110,7 +110,7 @@ export const SearchPage = () => {
                       alt={product.slug}
                       height={300}
                       width={300}
-                      src={product.ProductImage[0].url}
+                      src={product.ProductImage[0]?.url ?? 'https://res.cloudinary.com/dozzu7xhx/image/upload/v1720374544/teslo-shop/tools/wil2eqzpwgsnuaa2dvvf.png'}
                     />
                   <div className="p-5 ">
                     <Link href={`/product/${product.slug}`}>

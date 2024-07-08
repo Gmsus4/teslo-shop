@@ -1,142 +1,141 @@
-'use server' // Indica que este archivo se ejecutará en el lado del servidor
+"use server";
 
-import prisma from '@/lib/prisma';
-import { Gender, Product, Size } from '@prisma/client'; // Importa el enum Gender desde Prisma Client
-import { revalidatePath } from 'next/cache';
-import { z } from 'zod'; // Importa la biblioteca zod para validación de esquemas
-import { v2 as cloudinary } from 'cloudinary';
-cloudinary.config(process.env.CLOUDINARY_URL ?? '');
+import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+import { Gender, Product, Size } from "@prisma/client";
+import { z } from "zod";
+import { v2 as cloudinary } from "cloudinary";
+cloudinary.config(process.env.CLOUDINARY_URL ?? "");
 
-// Define el esquema del producto utilizando zod
 const productSchema = z.object({
-    id: z.string().uuid().optional().nullable(), // String tipo UUID que es opcional y puede ser nulo
-    title: z.string().min(3).max(255), // String que debe tener entre 3 y 255 caracteres
-    slug: z.string().min(3).max(255), // String que debe tener entre 3 y 255 caracteres
-    description: z.string(), // String sin restricciones de longitud
-    price: z.coerce
-        .number() // Coerce para asegurar que sea un número
-        .min(0) // El precio debe ser al menos 0
-        .transform(val => Number(val.toFixed(2))), // Transforma el número a dos decimales
-    inStock: z.coerce
-        .number() // Coerce para asegurar que sea un número
-        .min(0) // La cantidad en stock debe ser al menos 0
-        .transform(val => Number(val.toFixed(0))), // Transforma el número a un entero
-    categoryId: z.string().uuid(), // String tipo UUID
-    sizes: z.coerce.string().transform(val => val.split(',')), // Convierte una cadena de texto en un array separando por comas
-    tags: z.string(), // String sin restricciones de longitud
-    gender: z.nativeEnum(Gender) // Enum nativo de Prisma para el género
+  id: z.string().uuid().optional().nullable(),
+  title: z.string().min(3).max(255),
+  slug: z.string().min(3).max(255),
+  description: z.string(),
+  price: z.coerce
+    .number()
+    .min(0)
+    .transform((val) => Number(val.toFixed(2))),
+  inStock: z.coerce
+    .number()
+    .min(0)
+    .transform((val) => Number(val.toFixed(0))),
+  categoryId: z.string().uuid(),
+  sizes: z.coerce.string().transform((val) => val.split(",")),
+  tags: z.string(),
+  gender: z.nativeEnum(Gender),
 });
 
-// Función asincrónica para crear o actualizar un producto
 export const createUpdateProduct = async (formData: FormData) => {
-    const data = Object.fromEntries(formData); // Convierte FormData en un objeto
-    const productParsed = productSchema.safeParse(data); // Valida el objeto contra el esquema definido
+  const data = Object.fromEntries(formData);
+  const productParsed = productSchema.safeParse(data);
 
-    if (!productParsed.success) { // Si la validación falla
-        console.log(productParsed.error); // Imprime los errores de validación en la consola
-        return {
-            ok: false // Retorna un objeto indicando que la operación no fue exitosa
-        };
-    }
+  if (!productParsed.success) {
+    console.log(productParsed.error);
+    return { ok: false };
+  }
 
-    const product = productParsed.data;
-    product.slug = product.slug.toLowerCase().replace(/ /g, '-').trim();
+  const product = productParsed.data;
+  product.slug = product.slug.toLowerCase().replace(/ /g, "-").trim();
 
-    const { id, ...rest } = product;
+  const { id, ...rest } = product;
 
-    try {
-        const primsaTx = await prisma.$transaction(async (tx) => {
+  try {
+    const prismaTx = await prisma.$transaction(async (tx) => {
+      let product: Product;
+      const tagsArray = rest.tags
+        .split(",")
+        .map((tag) => tag.trim().toLowerCase());
 
-            let product: Product;
-            const tagsArray = rest.tags.split(',').map(tag => tag.trim().toLowerCase());
-    
-            if(id){
-                //Actualizar
-                product = await prisma.product.update({
-                    where: { id: id },
-                    data: {
-                        ...rest,
-                        sizes: {
-                            set: rest.sizes as Size[]
-                        },
-                        tags: {
-                            set: tagsArray
-                        }
-                    }
-                });
-    
-            } else {
-                //Crear
-                product = await prisma.product.create({
-                    data: {
-                        ...rest,
-                        sizes: {
-                            set: rest.sizes as Size[]
-                        },
-                        tags: {
-                            set: tagsArray
-                        }
-                    }
-                })
-            }
-    
-            //Proceso de carga y guardado de imagenes
-            //Recorrer las imagenes y guardarlas
-            if(formData.getAll('images')){
-                const images = await uploadImages(formData.getAll('images') as File[]);
-                if(!images){
-                    throw new Error('No se pudo cargar las imágenes, rollingback')
-                }
-
-                await tx.productImage.createMany({
-                    data: images.map(image => ({
-                        url: image!,
-                        productId: product.id
-                    }))
-                })
-            }
-    
-            return {
-                product
-            }
+      if (id) {
+        // Actualizar
+        product = await prisma.product.update({
+          where: { id },
+          data: {
+            ...rest,
+            sizes: {
+              set: rest.sizes as Size[],
+            },
+            tags: {
+              set: tagsArray,
+            },
+          },
         });
-        
-        //Todo: RevalidatePaths
-        revalidatePath('/admin/products');
-        revalidatePath(`/admin/product/${product.slug}`);
-        revalidatePath(`/products/${product.slug}`);
+      } else {
+        // Crear
+        product = await prisma.product.create({
+          data: {
+            ...rest,
+            sizes: {
+              set: rest.sizes as Size[],
+            },
+            tags: {
+              set: tagsArray,
+            },
+          },
+        });
+      }
 
-        return {
-            ok: true,
-            product: primsaTx.product
+      // Proceso de carga y guardado de imagenes
+      // Recorrer las imagenes y guardarlas
+      if (formData.getAll("images")) {
+        // [https://url.jpg, https://url.jpg]
+        const images = await uploadImages(formData.getAll("images") as File[]);
+        if (!images) {
+          throw new Error("No se pudo cargar las imágenes, rollingback");
         }
-    } catch (error) {
-        return {
-            ok: false,
-            message: 'Revisar los logs, no se pudo actualizar/crear'
-        }
-    }
+
+        await prisma.productImage.createMany({
+          data: images.map((image) => ({
+            url: image!,
+            productId: product.id,
+          })),
+        });
+      }
+
+      return {
+        product,
+      };
+    });
+
+    // Todo: RevalidatePaths
+    revalidatePath("/admin/products");
+    revalidatePath(`/admin/product/${product.slug}`);
+    revalidatePath(`/products/${product.slug}`);
+
+    return {
+      ok: true,
+      product: prismaTx.product,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message: "Revisar los logs, no se pudo actualizar/crear",
+    };
+  }
 };
 
-const uploadImages = async(images: File[]) => {
-    try {
-        const uploadPormises = images.map(async (image) => {
-            try {
-                //Crear y convertir esa imagen como un string para subir esa imagen facilmente a cloudinary
-                const buffer = await image.arrayBuffer();
-                const base64Image = Buffer.from(buffer).toString('base64');
-    
-                return cloudinary.uploader.upload(`data:image/png;base64,${base64Image}`, { folder: 'teslo-shop' }).then(r => r.secure_url)
-            } catch (error) {
-                console.log(error);
-                return null;  
-            }
-        });
+const uploadImages = async (images: File[]) => {
+  try {
+    const uploadPromises = images.map(async (image) => {
+      try {
+        const buffer = await image.arrayBuffer();
+        const base64Image = Buffer.from(buffer).toString("base64");
 
-        const uploadedImages = await Promise.all(uploadPormises);
-        return uploadedImages;
-    } catch (error) {
+        return cloudinary.uploader.upload(`data:image/png;base64,${base64Image}`, { folder: 'teslo-shop/products' }).then(r => r.secure_url)
+        // return cloudinary.uploader
+        //   .upload(`data:image/png;base64,${base64Image}`)
+        //   .then((r) => r.secure_url);
+      } catch (error) {
         console.log(error);
         return null;
-    }
-}   
+      }
+    });
+
+    const uploadedImages = await Promise.all(uploadPromises);
+    return uploadedImages;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};

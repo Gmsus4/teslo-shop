@@ -6,7 +6,7 @@ import { getTimeDate } from "@/utils/time";
 
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { IoCardOutline, IoCartOutline, IoTicketOutline } from "react-icons/io5";
+import { IoCardOutline } from "react-icons/io5";
 
 interface Props {
   searchParams: {
@@ -30,7 +30,6 @@ export default async function OrdersPage({ searchParams }: Props) {
   return (
     <>
       <Title title="Mis órdenes" className="text-center"/>
-
       {
         orders[0] ? (
           <div className="w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
@@ -39,15 +38,20 @@ export default async function OrdersPage({ searchParams }: Props) {
                 {orders.map((order) => (
                   <li key={order.id} className="py-3 sm:py-4">
                     <div className="flex items-center gap-6 md:gap-20 justify-between md:flex-row flex-row">
-                      <div className="flex">
-                        <div className="flex-shrink-0">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 relative">
                           <ProductImage
-                            className="rounded-full object-fill w-16 h-16"
+                            className="rounded-full object-fill w-20 h-20"
                             alt={order.user.name!}
                             src={order.user.image!}
                             width={400}
                             height={400}
-                          />
+                        />
+                          <div className="flex items-center justify-center gap-1 bg-white absolute bottom-0 font-bold w-full">
+                            <span className="text-xs text-indigo-500">
+                              {getTimeDate(`${order.createdAt}`).arr[0].replace('Hace ', '')}
+                            </span>
+                          </div>
                         </div>
 
                         <div className="flex-1 min-w-0 ms-4">
@@ -55,12 +59,6 @@ export default async function OrdersPage({ searchParams }: Props) {
                             <p className="text-sm font-medium text-gray-900 truncate">
                               {order.user.name}
                             </p>
-                            <div className="flex items-center gap-1">
-                              <span className="flex w-2 h-2 bg-indigo-500 rounded-full"></span>
-                              <span className="text-xs text-indigo-500">
-                                {getTimeDate(`${order.createdAt}`).arr}
-                              </span>
-                            </div>
                           </div>
                           <p className="text-sm text-gray-500 truncate">
                             {order.user.email}
@@ -91,7 +89,7 @@ export default async function OrdersPage({ searchParams }: Props) {
                               <>
                                 <button
                                   type="button"
-                                  className="flex gap-2 items-center text-white cursor-default bg-gradient-to-br from-pink-500 to-orange-400 font-medium rounded-lg text-xs md:px-5 px-2 md:py-2.5 py-1 text-center md:me-2 md:mb-2"
+                                  className="flex gap-2 items-center text-white cursor-default bg-gradient-to-br from-pink-500 to-orange-400 font-medium rounded-lg text-xs md:px-5 px-2 md:py-2.5 py-1 text-center"
                                 >
                                   <IoCardOutline className="text-white hidden md:flex" />
                                   No Pagada
@@ -102,7 +100,7 @@ export default async function OrdersPage({ searchParams }: Props) {
                           <div className="items-center text-base font-semibold text-gray-900 inline-flex">
                             <Link
                               href={`/orders/${order.id}`}
-                              className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs md:px-5 px-2 md:py-2.5 py-1 text-center md:me-2 md:mb-2 w-full"
+                              className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs md:px-5 px-2 md:py-2.5 py-1 text-center w-full"
                             >
                               Ver orden
                             </Link>

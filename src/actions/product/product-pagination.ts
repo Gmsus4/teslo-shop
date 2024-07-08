@@ -22,7 +22,9 @@ export const getPaginatedProductWithImages = async({ page = 1, take = 12, gender
                 ProductImage: { //El ProductImage
                     take: 2, //Tome los primeros dos elementos
                     select: { //Selecciones
-                        url: true //El url lo queremos agregar.
+                        url: true, //El url lo queremos agregar.
+                        id: true,
+                        productId: true
                     }
                 }
             },

@@ -7,6 +7,7 @@ import { Metadata, ResolvingMetadata } from "next";
 
 import { notFound } from "next/navigation";
 import { AddToCart } from "./ui/AddToCart";
+import { auth } from "@/auth.config";
 
 interface Props{
   params: {
@@ -39,6 +40,10 @@ export async function generateMetadata(
 }
 
 export default async function ProductBySlugPage({ params }:Props) {
+  const session = await auth();
+  const roleUser = session?.user.role;
+
+
   const { slug } = params;
   const product = await getProductBySlug(slug)
   if(!product){
@@ -74,7 +79,7 @@ export default async function ProductBySlugPage({ params }:Props) {
         </h1>
         <p className="text-lg mb-5">${product.price}</p>
 
-        <AddToCart product={product} />
+        <AddToCart product={product} role={roleUser}/>
         
         {/* Descripcion */}
         <h3 className="font-bold text-sm ">Descripción</h3>

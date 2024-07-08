@@ -1,38 +1,41 @@
-import { getCategories, getProductBySlug } from "@/actions";
-import { Title } from "@/components";
-import { redirect } from "next/navigation";
-import { ProductForm } from "./ui/ProductForm";
+import { getCategories, getProductBySlug } from '@/actions';
+import { Title } from '@/components';
+import { redirect } from 'next/navigation';
+import { ProductForm } from './ui/ProductForm';
 
-interface Props{
-    params: {
-        slug: string
-    }
+interface Props {
+  params: {
+    slug: string;
+  }
 }
 
-export default async function ProductPage({params}:Props) {
-    const { slug } = params;
-    
-    //Promesas Uno por uno
-    // const product = await getProductBySlug(slug);
-    // const categories = await getCategories();
 
-    //Todas las promesas al mismo tiempo
-    const [product, categories] = await Promise.all([
-      getProductBySlug(slug),
-      getCategories()
-    ])
 
-    //Todo: New
-    if(!product && slug !== 'new' ){
-        redirect('/admin/products')
-    }
+export default async function ProductPage({ params }: Props) {
 
-    const title = (slug === 'new') ? 'Nuevo producto' : 'Editar producto';
+  const { slug } = params;
+
+  const [ product, categories ] = await Promise.all([
+    getProductBySlug(slug),
+    getCategories()
+  ]);
+ 
+
+  // Todo: new
+  if ( !product && slug !== 'new' ) {
+    redirect('/admin/products')
+  }
+
+  const editProduct = !(slug === 'new');
+  console.log(editProduct)
+
+  const title = (slug === 'new') ? 'Nuevo producto' : 'Editar producto'
 
   return (
     <>
-      <Title title={ title }/>
-      <ProductForm product={product ?? {}} categories={categories}/>
+      <Title title={ title } />
+
+      <ProductForm product={ product ?? {} } categories={ categories } isEditProduct={editProduct}/>
     </>
   );
 }
