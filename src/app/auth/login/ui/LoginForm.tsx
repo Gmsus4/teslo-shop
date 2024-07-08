@@ -44,6 +44,10 @@ export const LoginForm = () => {
 
       <LoginButton />
 
+      <Link href="/auth/new-account" className="btn-primary text-center shadow-2xl mt-4">
+        Crear una nueva cuenta
+      </Link>
+
       {/* divisor l ine */}
       <div className="flex items-center my-5">
         <div className="flex-1 border-t border-gray-500"></div>
@@ -79,10 +83,6 @@ export const LoginForm = () => {
           Conectar con GitHub
         </button>
       </div>
-
-      <Link href="/auth/new-account" className="btn-secondary text-center">
-        Crear una nueva cuenta
-      </Link>
     </form>
   );
 };
